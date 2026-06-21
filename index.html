@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Guest Manual | 宿泊マニュアル</title>
+<style>
+:root{
+  --esp:#3B2314;--lat:#8B5E3C;--car:#C4873A;--crm:#FBF6EF;--mlk:#F5EDE0;
+  --foam:#EDE0CE;--smk:#9E8B78;--wht:#FFFFFF;--chr:#2C2C2C;
+  --ban:#C4873A;--ban-lt:#FBF6EF;--tam:#3A7D8C;--tam-lt:#EBF6F8;
+  --red:#B04030;--red-lt:#FDF0EE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--mlk);color:var(--chr);min-height:100vh}
+.hidden{display:none!important}
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  border:none;border-radius:12px;cursor:pointer;font-size:1rem;font-weight:600;
+  padding:.75rem 1.5rem;transition:.15s;width:100%}
+.btn-prop{background:var(--wht);border:2px solid var(--foam);color:var(--esp);
+  flex-direction:column;gap:.3rem;padding:1.5rem 1rem;border-radius:16px;font-size:1rem}
+.btn-prop:hover,.btn-prop:active{border-color:var(--car);background:var(--crm)}
+.btn-pin{color:var(--wht);border-radius:12px;font-size:1.1rem;padding:.85rem}
+.btn-back{background:none;border:none;color:var(--smk);cursor:pointer;font-size:.9rem;
+  padding:.5rem 0;display:flex;align-items:center;gap:.3rem}
+.btn-back:hover{color:var(--lat)}
+/* ── Landing ── */
+#view-landing{max-width:480px;margin:0 auto;padding:2rem 1.25rem;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+.brand-logo{font-size:3rem;margin-bottom:.5rem}
+.brand-title{font-size:1.4rem;font-weight:700;color:var(--esp);text-align:center}
+.brand-sub{font-size:.85rem;color:var(--smk);text-align:center}
+.prop-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%}
+.prop-emoji{font-size:2rem}
+.prop-name{font-size:1rem;font-weight:700}
+.prop-sub{font-size:.75rem;color:var(--smk);font-weight:400}
+/* ── PIN ── */
+#view-pin{max-width:400px;margin:0 auto;padding:1.5rem 1.25rem;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem}
+.pin-card{background:var(--wht);border-radius:20px;padding:2rem 1.5rem;width:100%;
+  box-shadow:0 4px 24px rgba(0,0,0,.08);text-align:center}
+.pin-emoji{font-size:2.5rem;margin-bottom:.5rem}
+.pin-title{font-size:1.2rem;font-weight:700;color:var(--esp);margin-bottom:.25rem}
+.pin-label{font-size:.85rem;color:var(--smk);margin-bottom:1.25rem}
+.pin-dots{display:flex;gap:.75rem;justify-content:center;margin-bottom:1.25rem}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--foam);background:transparent;transition:.15s}
+.pin-dot.filled{background:var(--car);border-color:var(--car)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.pin-key{background:var(--mlk);border:none;border-radius:12px;cursor:pointer;
+  font-size:1.3rem;font-weight:600;color:var(--esp);height:56px;transition:.1s}
+.pin-key:hover{background:var(--foam)}
+.pin-key:active{transform:scale(.95)}
+.pin-key.del{background:transparent;color:var(--smk);font-size:1rem}
+.pin-error{color:var(--red);font-size:.85rem;margin-top:.5rem}
+/* ── Main Content ── */
+#view-main{min-height:100vh}
+.top-bar{position:sticky;top:0;z-index:100;background:var(--wht);border-bottom:1px solid var(--foam);
+  display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem}
+.top-bar-name{font-weight:700;font-size:1rem;flex:1}
+.top-bar-emoji{font-size:1.4rem}
+.tab-bar{display:flex;border-bottom:2px solid var(--foam);background:var(--wht);position:sticky;top:57px;z-index:99}
+.tab{flex:1;padding:.75rem .5rem;border:none;background:none;cursor:pointer;
+  font-size:.85rem;font-weight:600;color:var(--smk);border-bottom:3px solid transparent;
+  transition:.15s;display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.tab.active{color:inherit;border-bottom-color:inherit}
+.tab-icon{font-size:1.2rem}
+.content-area{padding:1rem;max-width:640px;margin:0 auto}
+/* ── Section cards ── */
+.section-card{background:var(--wht);border-radius:14px;margin-bottom:.75rem;overflow:hidden;
+  border:1px solid var(--foam)}
+.section-head{display:flex;align-items:center;gap:.75rem;padding:1rem 1rem;cursor:pointer;
+  user-select:none}
+.section-head:hover{background:var(--crm)}
+.section-icon{font-size:1.4rem;flex-shrink:0}
+.section-title-en{font-weight:700;font-size:.95rem;color:var(--esp)}
+.section-title-ja{font-size:.75rem;color:var(--smk)}
+.chevron{margin-left:auto;font-size:.75rem;color:var(--smk);transition:.2s;flex-shrink:0}
+.chevron.open{transform:rotate(180deg)}
+.section-body{padding:0 1rem 1rem;border-top:1px solid var(--foam)}
+/* ── Steps ── */
+.steps{list-style:none;margin:.75rem 0 0}
+.step{display:flex;gap:.75rem;margin-bottom:.5rem;align-items:flex-start}
+.step-num{background:var(--car);color:var(--wht);border-radius:50%;
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.step-en{font-size:.9rem;font-weight:500;color:var(--chr)}
+.step-ja{font-size:.78rem;color:var(--smk);margin-top:.1rem}
+/* ── Info cards ── */
+.info-card{background:var(--mlk);border-radius:10px;padding:.75rem 1rem;margin:.75rem 0 0}
+.info-row{display:flex;justify-content:space-between;align-items:center;
+  padding:.4rem 0;border-bottom:1px solid var(--foam)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:.8rem;color:var(--smk)}
+.info-val{font-size:.9rem;font-weight:600;color:var(--esp)}
+/* ── Warning box ── */
+.warn-box{background:var(--red-lt);border-left:3px solid var(--red);border-radius:0 8px 8px 0;
+  padding:.6rem .9rem;margin:.75rem 0 0}
+.warn-text{font-size:.82rem;font-weight:600;color:var(--red)}
+.warn-ja{font-size:.75rem;color:#9B4030;margin-top:.15rem}
+/* ── Rules ── */
+.rule-card{border-left:4px solid var(--car)}
+.rule-card.important{border-left-color:var(--red)}
+.rule-text{font-size:.9rem;color:var(--chr);margin-top:.75rem;line-height:1.6}
+.rule-ja{font-size:.8rem;color:var(--smk);margin-top:.4rem;font-style:italic;line-height:1.5}
+/* ── Emergency ── */
+.emer-hero{background:var(--red);color:var(--wht);border-radius:14px;padding:1.25rem;
+  margin-bottom:.75rem;text-align:center}
+.emer-nums{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.75rem 0 0}
+.emer-num{background:rgba(255,255,255,.15);border-radius:10px;padding:.75rem;text-align:center}
+.emer-num-dig{font-size:2rem;font-weight:700;letter-spacing:.05em}
+.emer-num-label{font-size:.72rem;margin-top:.2rem;opacity:.85}
+.emer-addr{font-size:.8rem;margin:.75rem 0 0;opacity:.9;background:rgba(0,0,0,.15);
+  border-radius:8px;padding:.5rem .75rem;line-height:1.6}
+.contacts-grid{display:grid;gap:.6rem;margin-bottom:.75rem}
+.contact-card{background:var(--wht);border:1px solid var(--foam);border-radius:12px;
+  padding:.85rem 1rem;display:flex;align-items:center;gap:.75rem}
+.contact-icon{font-size:1.3rem;flex-shrink:0}
+.contact-info{flex:1}
+.contact-name-en{font-size:.85rem;font-weight:600;color:var(--esp)}
+.contact-name-ja{font-size:.75rem;color:var(--smk)}
+.contact-tel{font-size:1rem;font-weight:700;color:var(--car)}
+.contact-tel a{color:inherit;text-decoration:none}
+.response-card{background:var(--wht);border:1px solid var(--foam);border-radius:14px;
+  padding:1rem;margin-bottom:.6rem}
+.response-head{font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+.response-en{font-size:.85rem;color:var(--chr);line-height:1.6}
+.response-ja{font-size:.78rem;color:var(--smk);margin-top:.3rem;font-style:italic;line-height:1.5}
+.hotline-box{background:var(--crm);border:1px solid var(--car);border-radius:12px;
+  padding:1rem;text-align:center}
+.hotline-num{font-size:1.3rem;font-weight:700;color:var(--lat);margin:.4rem 0}
+.brand-label{font-size:.75rem;color:var(--smk)}
+/* ── WiFi ── */
+.wifi-box{background:var(--crm);border:2px dashed var(--car);border-radius:12px;padding:1rem;margin-top:.75rem}
+.wifi-row{display:flex;justify-content:space-between;padding:.4rem 0;
+  border-bottom:1px solid var(--foam)}
+.wifi-row:last-child{border-bottom:none}
+.wifi-label{font-size:.8rem;color:var(--smk)}
+.wifi-val{font-size:.88rem;font-weight:700;color:var(--esp);word-break:break-all;text-align:right;max-width:60%}
+/* ── Access ── */
+.access-list{list-style:none;margin:.75rem 0 0}
+.access-item{display:flex;gap:.6rem;padding:.4rem 0;align-items:flex-start;
+  border-bottom:1px solid var(--foam)}
+.access-item:last-child{border-bottom:none}
+.access-icon{flex-shrink:0;font-size:1rem;margin-top:.1rem}
+.access-en{font-size:.88rem;font-weight:500;color:var(--chr)}
+.access-ja{font-size:.76rem;color:var(--smk)}
+/* ── Footer ── */
+.footer{text-align:center;padding:2rem 1rem;color:var(--smk);font-size:.78rem}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="view-landing">
+  <div>
+    <div class="brand-logo">☕</div>
+    <div class="brand-title">Guest Manual</div>
+    <div class="brand-title" style="font-size:1rem;margin-top:.2rem">宿泊マニュアル</div>
+    <div class="brand-sub" style="margin-top:.5rem">Select your property to continue<br>物件を選択してください</div>
+  </div>
+  <div class="prop-grid">
+    <button class="btn btn-prop" onclick="selectProp('bainan')">
+      <span class="prop-emoji">🌿</span>
+      <span class="prop-name">Bainan Base</span>
+      <span class="prop-sub">梅南ベース</span>
+    </button>
+    <button class="btn btn-prop" onclick="selectProp('tamatsu')">
+      <span class="prop-emoji">🏡</span>
+      <span class="prop-name">Tamatsu</span>
+      <span class="prop-sub">玉津</span>
+    </button>
+  </div>
+  <div style="font-size:.75rem;color:var(--smk);text-align:center">
+    🔒 Access code required &nbsp;|&nbsp; アクセスコードが必要です
+  </div>
+</div>
+
+<!-- ══ PIN ══ -->
+<div id="view-pin" class="hidden">
+  <button class="btn-back" onclick="goLanding()">← Back / 戻る</button>
+  <div class="pin-card">
+    <div class="pin-emoji" id="pin-emoji">🌿</div>
+    <div class="pin-title" id="pin-prop-name">Bainan Base</div>
+    <div class="pin-label">Enter 4-digit access code<br>4桁のアクセスコードを入力</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-error hidden" id="pin-error">Incorrect code — please try again / コードが違います</div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinKey('1')">1</button>
+    <button class="pin-key" onclick="pinKey('2')">2</button>
+    <button class="pin-key" onclick="pinKey('3')">3</button>
+    <button class="pin-key" onclick="pinKey('4')">4</button>
+    <button class="pin-key" onclick="pinKey('5')">5</button>
+    <button class="pin-key" onclick="pinKey('6')">6</button>
+    <button class="pin-key" onclick="pinKey('7')">7</button>
+    <button class="pin-key" onclick="pinKey('8')">8</button>
+    <button class="pin-key" onclick="pinKey('9')">9</button>
+    <button class="pin-key del" onclick="pinKey('C')">✕</button>
+    <button class="pin-key" onclick="pinKey('0')">0</button>
+    <button class="pin-key del" onclick="pinKey('DEL')">⌫</button>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="view-main" class="hidden">
+  <div class="top-bar">
+    <button class="btn-back" style="padding:0" onclick="goLanding()">← </button>
+    <span class="top-bar-emoji" id="main-emoji">🌿</span>
+    <span class="top-bar-name" id="main-name">Bainan Base</span>
+  </div>
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab active" id="tab-manual" onclick="switchTab('manual')">
+      <span class="tab-icon">📖</span>Manual
+    </button>
+    <button class="tab" id="tab-rules" onclick="switchTab('rules')">
+      <span class="tab-icon">📋</span>Rules
+    </button>
+    <button class="tab" id="tab-emergency" onclick="switchTab('emergency')">
+      <span class="tab-icon">🆘</span>Emergency
+    </button>
+  </div>
+
+  <!-- Manual tab -->
+  <div id="content-manual" class="content-area"></div>
+  <!-- Rules tab -->
+  <div id="content-rules" class="content-area hidden"></div>
+  <!-- Emergency tab -->
+  <div id="content-emergency" class="content-area hidden"></div>
+
+  <div class="footer">Bainan Base / 梅南ベース &amp; Tamatsu / 玉津<br>Host: 𠮷川延良 090-9112-9281</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// PROPERTY DATA
+// ═══════════════════════════════════════════
+const PROPS = {
+bainan: {
+  id:'bainan', pin:'2727', emoji:'🌿', name:'Bainan Base', nameJa:'梅南ベース',
+  accent:'#C4873A', accentLt:'#FBF6EF',
+  address:'1-2-27 Bainan, Nishinari-ku, Osaka', addressJa:'大阪市西成区梅南1-2-27',
+  access:[
+    {en:'Hanazono-cho Sta. (Yotsubashi Line) — 4 min walk', ja:'地下鉄四つ橋線 花園町駅 徒歩4分'},
+    {en:'Tengachaya Sta. (Nankai) — 12 min walk', ja:'南海電鉄 天下茶屋駅 徒歩12分'},
+    {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）'},
+  ],
+  wifi:{id:'【要確認 / TBD】', pass:'【要確認 / TBD】'},
+  floors:'1F Entrance · 2F Living room · 3F Bedroom & Laundry',
+  floorsJa:'1F玄関のみ · 2F居室 · 3F寝室・洗濯',
+  maxGuests:'4', amenities:'Towels & amenities for all guests / タオル・アメニティ人数分あり',
+  manual:[
+    {id:'ac', em:'❄️', en:'Air Conditioner', ja:'エアコン', brand:'TOSHIBA',
+     steps:[
+       {en:'Remote is on the table', ja:'リモコンはテーブルの上'},
+       {en:'Press COOL / HEAT / DRY to select mode', ja:'冷房・暖房・除湿ボタンでモード選択'},
+       {en:'Adjust temp with TEMP ▲ / TEMP ▼', ja:'温度▲▼で調整（目安：冷27°C / 暖22°C）'},
+       {en:'Press STOP (center) to turn off', ja:'「停止」ボタン（中央）で運転停止'},
+       {en:'Turn off when leaving or sleeping', ja:'外出時・就寝時は必ず電源をお切りください'},
+     ]},
+    {id:'ih', em:'🍳', en:'IH Cooktop', ja:'IHコンロ', brand:'HITACHI HT-40C',
+     steps:[
+       {en:'Press POWER — hold 1 second to activate', ja:'「電源/切入」を1秒長押し'},
+       {en:'Press Off/Start on the side you want to use', ja:'使いたい側の「切/スタート」を押す'},
+       {en:'> raises heat · < lowers (max 7)', ja:'「>」で火力アップ / 「<」でダウン（最大7）'},
+       {en:'Press Off/Start again to stop that burner', ja:'「切/スタート」をもう一度押して停止'},
+       {en:'Wait for plate to cool before touching', ja:'使用後はプレートが冷えてから触れてください'},
+     ],
+     warn:'IH-compatible cookware only. No aluminum or copper pots.',
+     warnJa:'IH対応の調理器具をご使用ください。アルミ・銅製は使用不可。'},
+    {id:'micro', em:'📡', en:'Microwave', ja:'電子レンジ', brand:'YAMAZEN',
+     steps:[
+       {en:'Place food in microwave-safe container inside', ja:'耐熱容器に食品を入れ電子レンジの中に置く'},
+       {en:'Standard: press レンジ → 1分 / 10秒 to set time → スタート', ja:'通常加熱：レンジ→時間設定→スタート'},
+       {en:'Auto: press ごはん (rice 150g) or 飲み物 (drinks) → スタート', ja:'オートメニュー：ごはん/飲み物→スタート'},
+       {en:'Defrost: press 解凍 → set weight → スタート', ja:'解凍：解凍→重量設定→スタート'},
+       {en:'Cancel anytime: press 取消', ja:'キャンセルは「取消」ボタン'},
+     ],
+     warn:'No metal containers or aluminum foil. Wipe interior after use.',
+     warnJa:'金属容器・アルミホイル使用不可。使用後は庫内を拭いてください。'},
+    {id:'heater', em:'🔥', en:'Water Heater', ja:'給湯器', brand:'Rinnai MC-135A',
+     steps:[
+       {en:'Press 運転 (POWER) — display lights up', ja:'「運転」ボタンを押す（ディスプレイ点灯）'},
+       {en:'∧ to raise / ∨ to lower temperature (rec. 40–42°C)', ja:'「∧」で温度アップ / 「∨」でダウン（推奨：40〜42°C）'},
+       {en:'Turn faucet to hot (red ▶︎) side for hot water', ja:'蛇口を「お湯（赤）」側に回すとお湯が出ます'},
+       {en:'After use: close faucet, press 運転 to turn off', ja:'使用後は蛇口を閉め「運転」で電源をオフ'},
+     ]},
+    {id:'vent', em:'💨', en:'Ventilation Fan', ja:'換気扇',
+     steps:[
+       {en:'Kitchen fan switch: above the IH cooktop — ON before cooking, OFF after', ja:'キッチン換気扇スイッチ：IHコンロの上 / 料理前ON・後OFF'},
+       {en:'Shower room fan: switch on the right just outside shower entrance, below the light switch', ja:'シャワー室換気扇：シャワー室手前右側・電気スイッチの下のボタン'},
+     ]},
+    {id:'shower', em:'🚿', en:'Shower', ja:'シャワー', brand:'INAX thermostatic faucet',
+     steps:[
+       {en:'Turn on water heater first (see above)', ja:'先に給湯器の電源を入れる（上記参照）'},
+       {en:'Left knob: set temperature — red side = hotter, blue = cooler', ja:'左ノブで温度設定（赤=熱い / 青=冷たい）'},
+       {en:'Right lever (ON ▲): push to start water flow', ja:'右レバー（ON▲）を押すと水が出ます'},
+       {en:'After use: push lever back to stop, return knob to center', ja:'使用後はレバーを戻して水を止め、ノブを中央に戻してください'},
+     ]},
+    {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ', brand:'INAX',
+     steps:[
+       {en:'Toilet paper: on the shelf inside the toilet room', ja:'トイレットペーパー：トイレ内の棚の上'},
+       {en:'Flush: pull the lever beside the tank toward you', ja:'水を流す：タンク横のレバーを手前に引く'},
+       {en:'Bidet remote: on the wall (REAR WASH / BIDET / STOP)', ja:'ウォシュレット：壁のリモコン（おしり洗浄 / ビデ / 止）'},
+     ],
+     warn:'Flush ONLY toilet paper. All other items go in the trash.',
+     warnJa:'流してよいのはトイレットペーパーのみ。ティッシュ等はゴミ箱へ。'},
+    {id:'wash', em:'👕', en:'Washing Machine', ja:'洗濯機',
+     steps:[
+       {en:'Machine & detergent: 3F balcony (detergent next to machine)', ja:'洗濯機・洗剤：3Fベランダ（洗剤は洗濯機の横）'},
+       {en:'Load laundry (up to 80%) · add detergent to drawer', ja:'洗濯物を入れ（8割まで）洗剤を投入口へ'},
+       {en:'Select COURSE → press START / PAUSE', ja:'コースを選択→スタート/一時停止を押す'},
+       {en:'Dry on 3F balcony · hangers & clips: Storage C', ja:'洗濯物は3Fベランダへ · ハンガー・洗濯バサミ：収納C'},
+     ],
+     warn:'Hours: 8:00 AM – 8:00 PM only. Not liable for color bleeding or shrinkage.',
+     warnJa:'使用可能時間8:00〜20:00。色移り・縮みについては責任を負いかねます。'},
+    {id:'fire', em:'🧯', en:'Fire Suppression Sheet', ja:'消火シート',
+     steps:[
+       {en:'Remove sheet from its case', ja:'袋から消火シートを取り出す'},
+       {en:'Hold both ends firmly and cover the fire from above', ja:'両端を持ち、上からかぶせる'},
+       {en:'Wait until the flame is out — do NOT remove the sheet', ja:'炎が消えるまでそのまま待つ（シートは剥がさない）'},
+     ],
+     warn:'In any emergency: call 119 FIRST. Use sheet only if safe.',
+     warnJa:'緊急時はまず119番。安全を確認してから消火。'},
+  ],
+  rules:[
+    {id:'tp', em:'🚽', en:'Toilet — flush TP only!', ja:'トイレ：流せるのはトイレットペーパーのみ', imp:true,
+     text:'Only toilet paper may be flushed. Tissues, wipes, and sanitary products MUST go in the trash bin. You may be charged repair costs if the drain is blocked.',
+     textJa:'トイレに流せるのはトイレットペーパーのみ。ティッシュ・生理用品等はゴミ箱へ。詰まった場合、修理費用をご負担いただく場合があります。'},
+    {id:'garbage', em:'🗑️', en:'Garbage — sort & bin', ja:'ゴミの分別',
+     text:'Sort: Burnable/Non-burnable (same bin OK) and Recyclables (separate bin). Indoor bins → when full, empty into the large outdoor bin on the premises. Do not take garbage anywhere else.',
+     textJa:'可燃・不燃は同じゴミ箱でOK。資源ごみは別に。いっぱいになったら施設内の大きなゴミ箱へ。他の場所へは持っていかないでください。'},
+    {id:'staff', em:'🚫', en:'Staff-only areas', ja:'立ち入り禁止エリア',
+     text:'Do not enter or touch areas marked "STAFF ONLY".',
+     textJa:'「STAFF ONLY」と表示されているエリアへの立ち入りはご遠慮ください。'},
+    {id:'guests', em:'👤', en:'Registered guests only', ja:'ゲスト以外の入室禁止', imp:true,
+     text:'Only guests listed in the reservation may enter. Friends or visitors are not permitted inside.',
+     textJa:'予約された方以外の入室はお断りしています。'},
+    {id:'lights', em:'💡', en:'Lights off when leaving', ja:'外出時の消灯',
+     text:'Please turn off lights and TV where possible when you leave.',
+     textJa:'外出の際は照明・テレビ等、なるべく電源をお切りください。'},
+    {id:'lock', em:'🔑', en:'Lock the door', ja:'戸締まり',
+     text:'Always lock the front door when leaving or going to sleep.',
+     textJa:'外出時・就寝時は必ず玄関のカギを施錠してください。'},
+    {id:'smoke', em:'🚭', en:'No smoking — inside & surrounding area', ja:'施設内・周辺禁煙', imp:true,
+     text:'Smoking is strictly prohibited inside the property and in the surrounding area. A cleaning fee (approx. ¥20,000–30,000) may be charged for violations.',
+     textJa:'施設内および施設周辺は全面禁煙。違反した場合クリーニング費用（目安2〜3万円）をご請求する場合があります。'},
+    {id:'smarea', em:'🚬', en:'Smoking areas nearby', ja:'近隣の喫煙可能な場所',
+     text:'Please check the QR code at the entrance for nearby designated smoking areas. (QR code will be posted)',
+     textJa:'近隣の喫煙可能な場所は入口のQRコードよりご確認ください。'},
+    {id:'fridge', em:'🧊', en:'Refrigerator', ja:'冷蔵庫',
+     text:'The refrigerator is for your use. Remove all food at check-out.',
+     textJa:'冷蔵庫はご自由にお使いください。チェックアウト時は食品をすべてお持ち帰りいただくか処分してください。'},
+    {id:'shoes', em:'👟', en:'No shoes indoors', ja:'土足禁止',
+     text:'Please remove shoes at the entrance. Slippers are provided.',
+     textJa:'玄関で靴を脱いでお上がりください。スリッパをご用意しています。'},
+    {id:'noise', em:'🔇', en:'Quiet hours: 21:00 – 7:00', ja:'騒音注意', imp:true,
+     text:'Please keep noise to a minimum between 9 PM and 7 AM. No loud voices, music, or TV. Please be considerate of neighbors.',
+     textJa:'夜21時〜翌朝7時は特に静かにお過ごしください。大声・音楽・テレビの大音量はご遠慮ください。'},
+    {id:'stream', em:'📺', en:'Netflix / YouTube', ja:'ストリーミングサービス',
+     text:'Please use your own account for Netflix, YouTube, etc. You MUST log out before check-out.',
+     textJa:'NetflixやYouTube等はご自身のアカウントをご使用ください。チェックアウト前に必ずログアウトしてください。'},
+    {id:'checkout', em:'🏁', en:'Check-out time: 10:00 AM', ja:'チェックアウト：10:00',
+     text:'Please check out by 10:00 AM. Leave the futon as-is — no need to tidy.',
+     textJa:'チェックアウトは10:00までにお願いします。布団はそのままで構いません。'},
+  ],
+  emer:{
+    address:'1-2-27 Bainan, Nishinari-ku, Osaka 〒557-0014',
+    hospital:{em:'🏥', en:'Nearest Hospital', ja:'最寄りの医療機関', name:'いこいクリニック', tel:'06-6633-1110'},
+    police:{em:'👮', en:'Nearest Police', ja:'最寄りの警察署', name:'西成警察署', tel:'06-6648-1234'},
+    fire:{em:'🚒', en:'Nearest Fire Dept', ja:'最寄りの消防署', name:'西成消防署', tel:'06-6653-0119'},
+  }
+},
+// ──────────────────────────────────────────
+tamatsu: {
+  id:'tamatsu', pin:'3147', emoji:'🏡', name:'Tamatsu', nameJa:'玉津',
+  accent:'#3A7D8C', accentLt:'#EBF6F8',
+  address:'3-14-7 Tamatsu, Higashinari-ku, Osaka', addressJa:'大阪市東成区玉津3-14-7',
+  access:[
+    {en:'Tsuruhashi Sta. (JR Loop / Kintetsu) — 13 min walk', ja:'JR環状線 / 近鉄 鶴橋駅 徒歩13分'},
+    {en:'Imazato Sta. (Sennichimae Line) — 9 min walk', ja:'地下鉄千日前線 今里駅 徒歩9分'},
+    {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）'},
+  ],
+  wifi:{id:'NSD1K-0548-a', pass:'faH5YyGTFUYCc'},
+  floors:'1F · 2F',
+  floorsJa:'1F · 2F',
+  maxGuests:'【要確認 / TBD】', amenities:'Towels & amenities for all guests / タオル・アメニティ人数分あり',
+  manual:[
+    {id:'ac', em:'❄️', en:'Air Conditioner', ja:'エアコン',
+     steps:[
+       {en:'Remote is near the AC unit', ja:'リモコンはエアコン付近にあります'},
+       {en:'Press COOL / HEAT / DRY to select mode', ja:'冷房・暖房・除湿ボタンでモード選択'},
+       {en:'Adjust temperature with ▲ / ▼ (rec. Cool 27°C / Heat 22°C)', ja:'温度▲▼で調整（目安：冷27°C / 暖22°C）'},
+       {en:'Press STOP or OFF to turn off', ja:'停止 / OFFボタンで運転停止'},
+       {en:'Turn off when leaving or sleeping', ja:'外出時・就寝時は必ず電源をお切りください'},
+     ]},
+    {id:'stove', em:'🍳', en:'Stove / コンロ', ja:'コンロの使い方',
+     steps:[
+       {en:'Turn the knob and press to ignite — hold until lit', ja:'つまみを回して押し込み、着火するまで押し続ける'},
+       {en:'Adjust flame with the knob', ja:'つまみで火力を調整'},
+       {en:'Turn knob to OFF after use', ja:'使用後はつまみをOFFに戻す'},
+     ],
+     warn:'Always use ventilation fan when cooking. Never leave the stove unattended.',
+     warnJa:'料理中は換気扇を必ず使用。その場を離れないでください。'},
+    {id:'micro', em:'📡', en:'Microwave', ja:'電子レンジ',
+     steps:[
+       {en:'Place food in microwave-safe container inside', ja:'耐熱容器に食品を入れ中に置く'},
+       {en:'Set time and press START', ja:'時間を設定してスタートを押す'},
+       {en:'Wipe interior after use', ja:'使用後は庫内を拭いてください'},
+     ],
+     warn:'No metal containers or aluminum foil.',
+     warnJa:'金属容器・アルミホイル使用不可。'},
+    {id:'heater', em:'🔥', en:'Water Heater', ja:'給湯器',
+     steps:[
+       {en:'Press POWER / 運転 — display lights up', ja:'「運転」ボタンを押す（ランプ点灯）'},
+       {en:'Set temperature ▲ / ▼ (rec. 40–42°C)', ja:'温度▲▼で設定（推奨：40〜42°C）'},
+       {en:'Turn faucet to hot (red) side for hot water', ja:'蛇口を「お湯（赤）」側に回す'},
+       {en:'After use: close faucet and press power off', ja:'使用後は蛇口を閉めて電源をオフ'},
+     ]},
+    {id:'vent', em:'💨', en:'Ventilation Fan', ja:'換気扇',
+     steps:[
+       {en:'Turn ON before cooking, OFF after use', ja:'料理前にON、使用後はOFF'},
+       {en:'Bathroom fan: switch near bathroom entrance', ja:'お風呂換気扇：浴室入口付近のスイッチ'},
+     ]},
+    {id:'bath', em:'🛁', en:'Bath', ja:'お風呂の使い方',
+     steps:[
+       {en:'Turn on water heater first (see above)', ja:'先に給湯器を起動（上記参照）'},
+       {en:'Turn faucet to hot side and fill tub to desired level', ja:'蛇口をお湯側に回し、適切な水位まで湯を張る'},
+       {en:'After use, drain the tub and wipe it down lightly', ja:'使用後は排水し、浴槽を軽く拭いてください'},
+     ]},
+    {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ',
+     steps:[
+       {en:'Toilet paper: stored under the washbasin', ja:'トイレットペーパー：洗面台の下に保管'},
+     ],
+     warn:'Flush ONLY toilet paper. All other items go in the trash.',
+     warnJa:'流してよいのはトイレットペーパーのみ。ティッシュ等はゴミ箱へ。'},
+    {id:'wash', em:'👕', en:'Washing Machine', ja:'洗濯機',
+     steps:[
+       {en:'Detergent: next to the washing machine', ja:'洗剤：洗濯機の横'},
+       {en:'Load laundry (up to 80%) · add detergent', ja:'洗濯物を入れ（8割まで）洗剤を投入'},
+       {en:'Select cycle and press START', ja:'コースを選んでスタートを押す'},
+       {en:'Dry laundry on 2F balcony', ja:'洗濯物は2Fベランダへ'},
+     ]},
+    {id:'fire', em:'🧯', en:'Fire Extinguisher', ja:'消火器',
+     steps:[
+       {en:'1F: located in the changing room (脱衣所)', ja:'1F：脱衣所に設置'},
+       {en:'2F: located in Bedroom A (寝室A)', ja:'2F：寝室Aに設置'},
+       {en:'Pull safety pin → aim at base of fire → squeeze lever', ja:'安全ピンを引き抜く → 炎の根元に向ける → レバーを強く握る'},
+     ],
+     warn:'Call 119 FIRST. Use extinguisher only if safe to do so.',
+     warnJa:'まず119番。安全が確認できる場合のみ使用。'},
+  ],
+  rules:[
+    {id:'tp', em:'🚽', en:'Toilet — flush TP only!', ja:'トイレ：流せるのはトイレットペーパーのみ', imp:true,
+     text:'Only toilet paper may be flushed. Tissues, wipes, and sanitary products MUST go in the trash bin.',
+     textJa:'トイレに流せるのはトイレットペーパーのみ。ティッシュ・生理用品等はゴミ箱へ。'},
+    {id:'garbage', em:'🗑️', en:'Garbage — sort & bin', ja:'ゴミの捨て方',
+     text:'Burnable & Non-burnable can go in the SAME bin. Recyclables (PET bottles, cans, etc.) must go in a SEPARATE bin. When an indoor bin is full, empty it into the large bin outside the entrance.',
+     textJa:'可燃・不燃は同じゴミ箱でOK。ペットボトル等の資源ごみは別のゴミ箱へ。いっぱいになったら玄関外の大きなゴミ箱へ。'},
+    {id:'staff', em:'🚫', en:'Staff-only areas', ja:'立ち入り禁止エリア',
+     text:'Do not enter or touch areas marked "STAFF ONLY".',
+     textJa:'「STAFF ONLY」と表示されているエリアへの立ち入りはご遠慮ください。'},
+    {id:'guests', em:'👤', en:'Registered guests only', ja:'ゲスト以外の入室禁止', imp:true,
+     text:'Only guests listed in the reservation may enter. Friends or visitors are not permitted inside.',
+     textJa:'予約された方以外の入室はお断りしています。'},
+    {id:'lights', em:'💡', en:'Lights off when leaving', ja:'外出時の消灯',
+     text:'Please turn off lights and appliances when you leave.',
+     textJa:'外出の際は照明・家電の電源をお切りください。'},
+    {id:'lock', em:'🔑', en:'Lock the door', ja:'戸締まり',
+     text:'Always lock the front door when leaving or going to sleep.',
+     textJa:'外出時・就寝時は必ず玄関のカギを施錠してください。'},
+    {id:'smoke', em:'🚭', en:'No smoking — inside & surrounding area', ja:'施設内・周辺禁煙', imp:true,
+     text:'Smoking is strictly prohibited inside the property and in the surrounding area. A cleaning fee (approx. ¥20,000–30,000) may be charged.',
+     textJa:'施設内・周辺は全面禁煙。違反の場合クリーニング費用（目安2〜3万円）をご請求する場合があります。'},
+    {id:'smarea', em:'🚬', en:'Smoking areas nearby', ja:'近隣の喫煙可能な場所',
+     text:"Hollys Coffee Life Imazato store, or Osaka City Designated Smoking Area near Tsuruhashi Station (3-18-8 Higashikobashi, Higashinari-ku, Osaka).",
+     textJa:'ホリーズカフェライフ今里店、または鶴橋駅前の大阪市指定喫煙所（東成区東小橋3-18-8）。'},
+    {id:'fridge', em:'🧊', en:'Refrigerator', ja:'冷蔵庫',
+     text:'The refrigerator is for your use. Please leave it EMPTY at check-out.',
+     textJa:'冷蔵庫はご自由にお使いください。チェックアウト時は空にしてください。'},
+    {id:'shoes', em:'👟', en:'No shoes indoors', ja:'土足禁止',
+     text:'Please remove shoes at the entrance. Slippers are provided.',
+     textJa:'玄関で靴を脱いでお上がりください。スリッパをご用意しています。'},
+    {id:'noise', em:'🔇', en:'Quiet hours: 21:00 – 7:00', ja:'騒音注意', imp:true,
+     text:'Please keep noise to a minimum between 9 PM and 7 AM. Please be considerate of neighbors.',
+     textJa:'夜21時〜翌朝7時は特に静かにお過ごしください。近隣への配慮をお願いします。'},
+    {id:'stream', em:'📺', en:'Netflix / YouTube', ja:'ストリーミングサービス',
+     text:'Please use your own account for Netflix, YouTube, etc. You MUST log out before check-out.',
+     textJa:'NetflixやYouTube等はご自身のアカウントをご使用ください。チェックアウト前に必ずログアウトしてください。'},
+  ],
+  emer:{
+    address:'3-14-7 Tamatsu, Higashinari-ku, Osaka 〒537-0025',
+    hospital:{em:'🏥', en:'Nearest Hospital', ja:'最寄りの医療機関', name:'東成病院', tel:'06-6981-2508'},
+    police:{em:'👮', en:'Nearest Police', ja:'最寄りの警察署', name:'東成警察署', tel:'06-6974-1234'},
+    fire:{em:'🚒', en:'Nearest Fire Dept', ja:'最寄りの消防署', name:'東成消防署', tel:'06-6971-0119'},
+  }
+}
+};
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let currentProp = null;
+let pinBuffer = '';
+
+// ═══════════════════════════════════════════
+// VIEWS
+// ═══════════════════════════════════════════
+function show(id){ ['landing','pin','main'].forEach(v=>document.getElementById('view-'+v).classList.toggle('hidden',v!==id)); }
+
+function goLanding(){
+  currentProp=null; pinBuffer=''; updateDots();
+  document.getElementById('pin-error').classList.add('hidden');
+  show('landing');
+}
+
+function selectProp(id){
+  currentProp=PROPS[id];
+  document.getElementById('pin-emoji').textContent=currentProp.emoji;
+  document.getElementById('pin-prop-name').textContent=currentProp.name+' / '+currentProp.nameJa;
+  document.querySelector('.btn-pin') && (document.querySelector('.btn-pin').style.background=currentProp.accent);
+  updateDots();
+  show('pin');
+}
+
+function updateDots(){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('d'+i);
+    if(d) d.classList.toggle('filled', i<pinBuffer.length);
+  }
+}
+
+function pinKey(k){
+  const errEl=document.getElementById('pin-error');
+  errEl.classList.add('hidden');
+  if(k==='C'){ pinBuffer=''; }
+  else if(k==='DEL'){ pinBuffer=pinBuffer.slice(0,-1); }
+  else if(pinBuffer.length<4){ pinBuffer+=k; }
+  updateDots();
+  if(pinBuffer.length===4){
+    if(pinBuffer===currentProp.pin){ renderAndShow(); }
+    else{ errEl.classList.remove('hidden'); pinBuffer=''; setTimeout(updateDots,50); }
+  }
+}
+
+// ═══════════════════════════════════════════
+// RENDER CONTENT
+// ═══════════════════════════════════════════
+function renderAndShow(){
+  const p=currentProp;
+  document.getElementById('main-emoji').textContent=p.emoji;
+  document.getElementById('main-name').textContent=p.name+' '+p.nameJa;
+  const acc=p.accent;
+  // Tab active color
+  document.querySelectorAll('.tab').forEach(t=>{ t.style.color=acc; t.style.borderBottomColor='transparent'; });
+  const actTab=document.getElementById('tab-manual');
+  actTab.style.borderBottomColor=acc;
+  renderManual(p);
+  renderRules(p);
+  renderEmergency(p);
+  switchTab('manual');
+  show('main');
+  window.scrollTo(0,0);
+}
+
+function switchTab(name){
+  ['manual','rules','emergency'].forEach(t=>{
+    document.getElementById('content-'+t).classList.toggle('hidden',t!==name);
+    const btn=document.getElementById('tab-'+t);
+    const active=t===name;
+    btn.classList.toggle('active',active);
+    btn.style.borderBottomColor = active ? currentProp.accent : 'transparent';
+    btn.style.color = active ? currentProp.accent : '#9E8B78';
+  });
+  window.scrollTo(0,0);
+}
+
+function toggleSection(id){
+  const body=document.getElementById('sec-body-'+id);
+  const chev=document.getElementById('sec-chev-'+id);
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  chev.textContent=open?'▼':'▲';
+  chev.classList.toggle('open',!open);
+}
+
+function makeStep(s,acc){
+  return`<li class="step">
+    <span class="step-num" style="background:${acc}">${s.i}</span>
+    <div><div class="step-en">${s.en}</div><div class="step-ja">${s.ja}</div></div>
+  </li>`;
+}
+
+function sectionCard(id,em,en,ja,bodyHtml,imp){
+  const borderColor=imp?'var(--red)':'var(--foam)';
+  return`<div class="section-card rule-${imp?'important':'card'}" style="border-left:4px solid ${borderColor}">
+    <div class="section-head" onclick="toggleSection('${id}')">
+      <span class="section-icon">${em}</span>
+      <div><div class="section-title-en">${en}</div><div class="section-title-ja">${ja}</div></div>
+      <span class="chevron" id="sec-chev-${id}">▼</span>
+    </div>
+    <div class="section-body" id="sec-body-${id}" style="display:none">${bodyHtml}</div>
+  </div>`;
+}
+
+// ── Manual ──
+function renderManual(p){
+  const el=document.getElementById('content-manual');
+  const acc=p.accent;
+  let html=`
+  <div class="section-card" style="border:2px solid ${acc};margin-bottom:.75rem">
+    <div style="padding:1rem">
+      <div style="font-size:.85rem;font-weight:700;color:${acc}">🏠 ${p.name} / ${p.nameJa}</div>
+      <div style="font-size:.8rem;color:var(--smk);margin:.25rem 0">${p.address}</div>
+      <div style="font-size:.75rem;color:var(--smk);font-style:italic">${p.addressJa}</div>
+      <ul class="access-list">`;
+  p.access.forEach(a=>{ html+=`<li class="access-item"><span class="access-icon">🚉</span><div><div class="access-en">${a.en}</div><div class="access-ja">${a.ja}</div></div></li>`; });
+  html+=`</ul>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem">
+        <span style="background:${acc}22;color:${acc};border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600">👥 Max ${p.maxGuests}</span>
+        <span style="background:${acc}22;color:${acc};border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600">🏢 ${p.floors}</span>
+      </div>
+      <div style="font-size:.78rem;color:var(--smk);margin-top:.5rem">🛎 ${p.amenities}</div>
+    </div>
+  </div>`;
+
+  // WiFi card
+  html+=`<div class="section-card"><div class="section-head" onclick="toggleSection('wifi')">
+    <span class="section-icon">📶</span>
+    <div><div class="section-title-en">Wi-Fi Connection</div><div class="section-title-ja">Wi-Fi接続方法</div></div>
+    <span class="chevron" id="sec-chev-wifi">▼</span>
+  </div><div class="section-body" id="sec-body-wifi" style="display:none">
+    <div class="wifi-box">
+      <div class="wifi-row"><span class="wifi-label">Network (SSID)</span><span class="wifi-val">${p.wifi.id}</span></div>
+      <div class="wifi-row"><span class="wifi-label">Password / パスワード</span><span class="wifi-val">${p.wifi.pass}</span></div>
+    </div>
+    <ol class="steps">
+      <li class="step"><span class="step-num" style="background:${acc}">1</span><div><div class="step-en">Open Settings on your device</div><div class="step-ja">デバイスの「設定」を開く</div></div></li>
+      <li class="step"><span class="step-num" style="background:${acc}">2</span><div><div class="step-en">Select Wi-Fi and choose the network name above</div><div class="step-ja">「Wi-Fi」で上記ネットワーク名を選択</div></div></li>
+      <li class="step"><span class="step-num" style="background:${acc}">3</span><div><div class="step-en">Enter the password and tap Connect</div><div class="step-ja">パスワードを入力して「接続」をタップ</div></div></li>
+    </ol>
+  </div></div>`;
+
+  // Appliance sections
+  p.manual.forEach(sec=>{
+    let body=``;
+    if(sec.brand) body+=`<div style="font-size:.75rem;font-weight:600;color:var(--smk);margin-top:.6rem;text-transform:uppercase;letter-spacing:.05em">${sec.brand}</div>`;
+    body+=`<ol class="steps">${sec.steps.map((s,i)=>makeStep({...s,i:i+1},acc)).join('')}</ol>`;
+    if(sec.warn) body+=`<div class="warn-box"><div class="warn-text">⚠ ${sec.warn}</div><div class="warn-ja">${sec.warnJa}</div></div>`;
+    html+=sectionCard(sec.id,sec.em,sec.en,sec.ja,body,false);
+  });
+
+  el.innerHTML=html;
+}
+
+// ── Rules ──
+function renderRules(p){
+  const el=document.getElementById('content-rules');
+  let html=`<div style="font-size:.8rem;color:var(--smk);margin-bottom:.75rem;padding:.5rem .75rem;background:var(--foam);border-radius:8px">
+    Please observe the following house rules. Thank you for your cooperation.<br>
+    <span style="font-style:italic">以下のハウスルールをお守りください。ご協力をお願いいたします。</span>
+  </div>`;
+  p.rules.forEach(r=>{
+    const body=`<div class="rule-text">${r.text}</div><div class="rule-ja">${r.textJa}</div>`;
+    html+=sectionCard(r.id,r.em,r.en,r.ja,body,r.imp||false);
+  });
+  el.innerHTML=html;
+}
+
+// ── Emergency ──
+function renderEmergency(p){
+  const e=p.emer;
+  const el=document.getElementById('content-emergency');
+  const html=`
+  <div class="emer-hero">
+    <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Emergency Numbers / 緊急連絡先</div>
+    <div class="emer-nums">
+      <div class="emer-num">
+        <div class="emer-num-dig">119</div>
+        <div class="emer-num-label">Fire / Ambulance<br>消防・救急</div>
+      </div>
+      <div class="emer-num">
+        <div class="emer-num-dig">110</div>
+        <div class="emer-num-label">Police<br>警察</div>
+      </div>
+    </div>
+    <div class="emer-addr">📍 ${e.address}</div>
+  </div>
+
+  <div class="contacts-grid">
+    ${[e.hospital,e.police,e.fire,
+       {em:'📞',en:'Host Support',ja:'宿泊サポート窓口',name:'𠮷川延良 (Nobuyoshi Yoshikawa)',tel:'090-9112-9281'}
+      ].map(c=>`
+    <div class="contact-card">
+      <span class="contact-icon">${c.em}</span>
+      <div class="contact-info">
+        <div class="contact-name-en">${c.en}</div>
+        <div class="contact-name-ja">${c.name}</div>
+      </div>
+      <div class="contact-tel"><a href="tel:${c.tel.replace(/-/g,'')}">${c.tel}</a></div>
+    </div>`).join('')}
+  </div>
+
+  <div class="response-card">
+    <div class="response-head">🔥 Fire / 火災</div>
+    <div class="response-en">Stay calm and call 119. A fire suppression device is located in the room. Evacuate immediately if the fire spreads.</div>
+    <div class="response-ja">落ち着いて119番通報。消火器（消火シート）は室内にあります。炎が広がった場合は直ちに避難。</div>
+  </div>
+  <div class="response-card">
+    <div class="response-head">🌏 Earthquake / 地震</div>
+    <div class="response-en">Take cover under a table and protect your head. Exit only after the shaking stops. Check emergency route maps on each floor.</div>
+    <div class="response-ja">テーブルの下に避難し頭を守る。揺れが収まってから外へ。各フロアの避難経路図を確認してください。</div>
+  </div>
+
+  <div class="hotline-box">
+    <div style="font-size:.85rem;font-weight:700;color:var(--lat)">📞 Multilingual Support / 多言語サポート</div>
+    <div style="font-size:.78rem;color:var(--smk);margin:.3rem 0">Japan Visitor Hotline — 24 hrs / 24時間対応・英語可</div>
+    <div class="hotline-num"><a href="tel:0503816-2787" style="color:inherit;text-decoration:none">050-3816-2787</a></div>
+    <div class="brand-label">For multilingual support, call the Japan Visitor Hotline above.</div>
+  </div>`;
+  el.innerHTML=html;
+}
+</script>
+</body>
+</html>
