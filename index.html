@@ -720,8 +720,8 @@ function renderEmergency(p){
 
   <div class="response-card">
     <div class="response-head">🔥 Fire / 火災</div>
-    <div class="response-en">Stay calm and call 119. A fire extinguisher is located in the room. Evacuate immediately if the fire spreads.</div>
-    <div class="response-ja">落ち着いて119番通報。消火器は室内にあります。炎が広がった場合は直ちに避難。</div>
+    <div class="response-en">Stay calm and call 119. ${p.id==='bainan' ? 'A fire suppression sheet is located in the room.' : 'A fire extinguisher is located in the room.'} Evacuate immediately if the fire spreads.</div>
+    <div class="response-ja">落ち着いて119番通報。${p.id==='bainan' ? '消火シートは室内にあります。' : '消火器は室内にあります。'}炎が広がった場合は直ちに避難。</div>
   </div>
   <div class="response-card">
     <div class="response-head">🌏 Earthquake / 地震</div>
