@@ -148,6 +148,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .access-ja{font-size:.76rem;color:var(--smk)}
 /* ── Footer ── */
 .footer{text-align:center;padding:2rem 1rem;color:var(--smk);font-size:.78rem}
+.lang-mini{display:flex;gap:.35rem;padding:.5rem 1rem;background:var(--wht);border-bottom:1px solid var(--foam);justify-content:flex-end}
+.lang-mini-btn{background:transparent;border:1.5px solid var(--foam);border-radius:16px;
+  cursor:pointer;font-size:.72rem;padding:.2rem .6rem;color:var(--smk);transition:.15s}
+.lang-mini-btn.active{color:var(--wht);font-weight:700;border-color:transparent}
+.lang-mini-btn:hover:not(.active){background:var(--foam)}
+.lang-bar{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.lang-btn{background:transparent;border:1.5px solid var(--foam);border-radius:20px;
+  cursor:pointer;font-size:.82rem;padding:.35rem .9rem;color:var(--smk);transition:.15s}
+.lang-btn.active{background:var(--car);border-color:var(--car);color:var(--wht);font-weight:700}
+.lang-btn:hover:not(.active){background:var(--foam)}
 </style>
 </head>
 <body>
@@ -156,9 +166,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="view-landing">
   <div>
     <div class="brand-logo">☕</div>
-    <div class="brand-title">Guest Manual</div>
-    <div class="brand-title" style="font-size:1rem;margin-top:.2rem">宿泊マニュアル</div>
-    <div class="brand-sub" style="margin-top:.5rem">Select your property to continue<br>物件を選択してください</div>
+    <div class="lang-bar">
+      <button class="lang-btn active" onclick="setLang('en')">🇬🇧 EN</button>
+      <button class="lang-btn" onclick="setLang('ja')">🇯🇵 日本語</button>
+      <button class="lang-btn" onclick="setLang('zh')">🇨🇳 中文</button>
+      <button class="lang-btn" onclick="setLang('ko')">🇰🇷 한국어</button>
+    </div>
+    <div class="brand-title" id="landing-title">Guest Manual</div>
+    <div class="brand-title" style="font-size:1rem;margin-top:.2rem" id="landing-subtitle">宿泊マニュアル</div>
+    <div class="brand-sub" style="margin-top:.5rem" id="landing-sub2">Select your property to continue<br>物件を選択してください</div>
   </div>
   <div class="prop-grid">
     <button class="btn btn-prop" onclick="selectProp('bainan')">
@@ -172,18 +188,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <span class="prop-sub">玉津ベース</span>
     </button>
   </div>
-  <div style="font-size:.75rem;color:var(--smk);text-align:center">
+  <div style="font-size:.75rem;color:var(--smk);text-align:center" id="landing-lock">
     🔒 Access code required &nbsp;|&nbsp; アクセスコードが必要です
   </div>
+
 </div>
 
 <!-- ══ PIN ══ -->
 <div id="view-pin" class="hidden">
-  <button class="btn-back" onclick="goLanding()">← Back / 戻る</button>
+  <button class="btn-back" id="pin-back-btn" onclick="goLanding()">← Back / 戻る</button>
   <div class="pin-card">
     <div class="pin-emoji" id="pin-emoji">🌿</div>
     <div class="pin-title" id="pin-prop-name">Bainan Base</div>
-    <div class="pin-label">Enter 4-digit access code<br>4桁のアクセスコードを入力</div>
+    <div class="pin-label" id="pin-label-text">Enter 4-digit access code<br>4桁のアクセスコードを入力</div>
     <div class="pin-dots" id="pin-dots">
       <div class="pin-dot" id="d0"></div>
       <div class="pin-dot" id="d1"></div>
@@ -217,16 +234,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="tab-bar" id="tab-bar">
     <button class="tab active" id="tab-manual" onclick="switchTab('manual')">
-      <span class="tab-icon">📖</span>Manual
+      <span class="tab-icon">📖</span><span id="tab-label-manual">Manual</span>
     </button>
     <button class="tab" id="tab-rules" onclick="switchTab('rules')">
-      <span class="tab-icon">📋</span>Rules
+      <span class="tab-icon">📋</span><span id="tab-label-rules">Rules</span>
     </button>
     <button class="tab" id="tab-emergency" onclick="switchTab('emergency')">
-      <span class="tab-icon">🆘</span>Emergency
+      <span class="tab-icon">🆘</span><span id="tab-label-emergency">Emergency</span>
     </button>
   </div>
 
+  <div class="lang-mini" id="content-lang-bar">
+    <button class="lang-mini-btn" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-mini-btn" onclick="setLang('ja')">🇯🇵 日本語</button>
+    <button class="lang-mini-btn" onclick="setLang('zh')">🇨🇳 中文</button>
+    <button class="lang-mini-btn" onclick="setLang('ko')">🇰🇷 한국어</button>
+  </div>
   <!-- Manual tab -->
   <div id="content-manual" class="content-area"></div>
   <!-- Rules tab -->
@@ -247,136 +270,135 @@ bainan: {
   accent:'#C4873A', accentLt:'#FBF6EF',
   address:'1-2-27 Bainan, Nishinari-ku, Osaka', addressJa:'大阪市西成区梅南1丁目2-27',
   access:[
-    {en:'Hanazono-cho Sta. (Yotsubashi Line) — 4 min walk', ja:'地下鉄四つ橋線 花園町駅 徒歩4分'},
-    {en:'Tengachaya Sta. (Nankai) — 12 min walk', ja:'南海電鉄 天下茶屋駅 徒歩12分'},
-    {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）'},
+    {en:'Hanazono-cho Sta. (Yotsubashi Line) — 4 min walk', zh:'花园町站（四桥线）步行4分钟', ko:'하나조노초역（요쌓바시선） 도보 4분', ja:'地下鉄四つ橋線 花園町駅 徒歩4分'},
+    {en:'Tengachaya Sta. (Nankai) — 12 min walk', zh:'天下茶屋站（南海电鐵）步行12分钟', ko:'덴가차야역（난카이） 도보 12분', ja:'南海電鉄 天下茶屋駅 徒歩12分'},
+    {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）', zh:'无停车场，请使用附近收费停车场', ko:'주차장 없음 — 근첫 코인 주차장 이용'},
   ],
   wifi:{id:'SPWH_L13_BF647B_5G', pass:'BainanBase0310'},
-  floors:'1F Entrance · 2F Living room · 3F Bedroom & Laundry',
-  floorsJa:'1F玄関のみ · 2F居室 · 3F寝室・洗濯',
-  maxGuests:'4', amenities:'Towels & amenities for all guests / タオル・アメニティ人数分あり',
+  floors:'1F Entrance · 2F Living · 3F Bedroom & Laundry', floorsJa:'1F玄関 · 2F居室 · 3F寝室・洗濯', floorsZh:'1F玄关 · 2F起居室 · 3F寝室・洗衣', floorsKo:'1F 현관 · 2F 거실 · 3F 침실·세탁',
+  maxGuests:'4', amenities:'Towels & amenities for all guests', amenitiesJa:'タオル・アメニティ人数分あり', amenitiesZh:'毛巾和便利设施人数齐备', amenitiesKo:'수건·어메니티 인원수만큼 준비',
   manual:[
-    {id:'ac', em:'❄️', en:'Air Conditioner', ja:'エアコン', brand:'TOSHIBA',
+    {id:'ac', em:'❄️', en:'Air Conditioner', ja:'エアコン', zh:'空调', ko:'에어컨', brand:'TOSHIBA',
      steps:[
-       {en:'Remote is on the table', ja:'リモコンはテーブルの上'},
-       {en:'Press COOL / HEAT / DRY to select mode', ja:'冷房・暖房・除湿ボタンでモード選択'},
-       {en:'Adjust temp with TEMP ▲ / TEMP ▼', ja:'温度▲▼で調整（目安：冷27°C / 暖22°C）'},
-       {en:'Press STOP (center) to turn off', ja:'「停止」ボタン（中央）で運転停止'},
-       {en:'Turn off when leaving or sleeping', ja:'外出時・就寝時は必ず電源をお切りください'},
+       {en:'Remote is on the table', ja:'リモコンはテーブルの上', zh:'遥控器在桌子上', ko:'리모콘은 테이블 위에 있습니다'},
+       {en:'Press COOL / HEAT / DRY to select mode', ja:'冷房・暖房・除湿ボタンでモード選択', zh:'按冷房/暖房/除湿选择模式', ko:'낙방/난방/제습 버튼으로 모드 선택', zh:'按冷房/暖房/除湿选择模式', ko:'낙방/난방/제습 버튼으로 모드 선택'},
+       {en:'Adjust temp with TEMP ▲ / TEMP ▼', zh:'用温度▲▼调节（建议：制冷27°C / 制缹22°C）', ko:'온도▲▼로 조절（권장：낙방 27°C / 난방 22°C）', ja:'温度▲▼で調整（目安：冷27°C / 暖22°C）'},
+       {en:'Press STOP (center) to turn off', ja:'「停止」ボタン（中央）で運転停止', zh:'按“停止”键（中心）关机', ko:'"정지" 버튼（중앙）으로 끄기'},
+       {en:'Turn off when leaving or sleeping', ja:'外出時・就寝時は必ず電源をお切りください', zh:'外出或就寡时请关闭电源', ko:'외출·취침 시에는 전원을 끄세요'},
      ]},
-    {id:'ih', em:'🍳', en:'IH Cooktop', ja:'IHコンロ', brand:'HITACHI HT-40C',
+    {id:'ih', em:'🍳', en:'IH Cooktop', ja:'IHコンロ', zh:'IH炉', ko:'IH 쿡탑', brand:'HITACHI HT-40C',
      steps:[
-       {en:'Press POWER — hold 1 second to activate', ja:'「電源/切入」を1秒長押し'},
-       {en:'Press Off/Start on the side you want to use', ja:'使いたい側の「切/スタート」を押す'},
-       {en:'> raises heat · < lowers (max 7)', ja:'「>」で火力アップ / 「<」でダウン（最大7）'},
-       {en:'Press Off/Start again to stop that burner', ja:'「切/スタート」をもう一度押して停止'},
-       {en:'Wait for plate to cool before touching', ja:'使用後はプレートが冷えてから触れてください'},
+       {en:'Press POWER — hold 1 second to activate', ja:'「電源/切入」を1秒長押し', zh:'长按“电源”键1秒启动', ko:'전원 버튼을 1초 길게 눌러 활성화'},
+       {en:'Press Off/Start on the side you want to use', ja:'使いたい側の「切/スタート」を押す', zh:'按下您想使用一側的“关/开始”键', ko:'사용할 쪽의 끋기/시작 버튼을 누르세요'},
+       {en:'> raises heat · < lowers (max 7)', zh:'>增大火力 / <减小（最大７）', ko:'>으로 화력 올리기 / <로 낮추기（최대 7）', ja:'「>」で火力アップ / 「<」でダウン（最大7）'},
+       {en:'Press Off/Start again to stop that burner', ja:'「切/スタート」をもう一度押して停止', zh:'再次按“关/开始”停止加热', ko:'끋기/시작을 다시 눌러 버너 끄기'},
+       {en:'Wait for plate to cool before touching', zh:'使用后等加热板冷却后再触摸', ko:'사용 후 플레이트가 식을 때까지 만지지 마세요', ja:'使用後はプレートが冷えてから触れてください'},
      ],
-     warn:'IH-compatible cookware only. No aluminum or copper pots.',
+     warn:'IH-compatible cookware only. No aluminum or copper pots.', warnZh:'仅限IH兼容烹饰器具。不可使用铝制或铜制锅具。', warnKo:'IH 호환 조리기구만 사용 가능. 알루미늑·구리 냄비 사용 불가.',
      warnJa:'IH対応の調理器具をご使用ください。アルミ・銅製は使用不可。'},
-    {id:'micro', em:'📡', en:'Microwave', ja:'電子レンジ', brand:'YAMAZEN',
+    {id:'micro', em:'📡', en:'Microwave', ja:'電子レンジ', zh:'微波炉', ko:'전자레인지', brand:'YAMAZEN',
      steps:[
-       {en:'Place food in microwave-safe container inside', ja:'耐熱容器に食品を入れ電子レンジの中に置く'},
-       {en:'Standard: press レンジ → 1分 / 10秒 to set time → スタート', ja:'通常加熱：レンジ→時間設定→スタート'},
-       {en:'Auto: press ごはん (rice 150g) or 飲み物 (drinks) → スタート', ja:'オートメニュー：ごはん/飲み物→スタート'},
-       {en:'Defrost: press 解凍 → set weight → スタート', ja:'解凍：解凍→重量設定→スタート'},
-       {en:'Cancel anytime: press 取消', ja:'キャンセルは「取消」ボタン'},
+       {en:'Place food in microwave-safe container inside', ja:'耐熱容器に食品を入れ電子レンジの中に置く', zh:'将食物放入耐热容器中放入微波炉', ko:'내열 용기에 음식을 담아 전자레인지에 넣으세요'},
+       {en:'Standard: press レンジ → 1分 / 10秒 to set time → スタート', zh:'普通加热：按レンジ→时间设定→スタート', ko:'일반 가열：レンジ→시간 설정→スタート', ja:'通常加熱：レンジ→時間設定→スタート'},
+       {en:'Auto: press ごはん (rice 150g) or 飲み物 (drinks) → スタート', zh:'自动：按ごはん（米饭150g）或飲み物→スタート', ko:'자동 메뉴：ごはん（밥 150g）또는 飲み物→スタート', ja:'オートメニュー：ごはん/飲み物→スタート'},
+       {en:'Defrost: press 解凍 → set weight → スタート', zh:'解冻：按解凍→设置重量→スタート', ko:'해동：解凍→중량 설정→スタート', ja:'解凍：解凍→重量設定→スタート'},
+       {en:'Cancel anytime: press 取消', ja:'キャンセルは「取消」ボタン', zh:'随时取消：按取消键', ko:'언제든지 취소：取消 버튼'},
      ],
-     warn:'No metal containers or aluminum foil. Wipe interior after use.',
+     warn:'No metal containers or aluminum foil. Wipe interior after use.', warnZh:'禁止使用金属容器或铝答。使用后请擦拭内部。', warnKo:'금속 용기·알루미늑 호일 사용 불가. 사용 후 내부를 닦아주세요.',
      warnJa:'金属容器・アルミホイル使用不可。使用後は庫内を拭いてください。'},
-    {id:'heater', em:'🔥', en:'Water Heater', ja:'給湯器', brand:'Rinnai MC-135A',
+    {id:'heater', em:'🔥', en:'Water Heater', ja:'給湯器', zh:'热水器', ko:'온수기', brand:'Rinnai MC-135A',
      steps:[
-       {en:'Press 運転 (POWER) — display lights up', ja:'「運転」ボタンを押す（ディスプレイ点灯）'},
-       {en:'∧ to raise / ∨ to lower temperature (rec. 40–42°C)', ja:'「∧」で温度アップ / 「∨」でダウン（推奨：40〜42°C）'},
-       {en:'Turn faucet to hot (red ▶︎) side for hot water', ja:'蛇口を「お湯（赤）」側に回すとお湯が出ます'},
-       {en:'After use: close faucet, press 運転 to turn off', ja:'使用後は蛇口を閉め「運転」で電源をオフ'},
+       {en:'Press 運転 (POWER) — display lights up', ja:'「運転」ボタンを押す（ディスプレイ点灯）', zh:'按“运转”键（显示屏亮起）', ko:'"운전" 버튼 누르기（디스플레이 점등）'},
+       {en:'∧ to raise / ∨ to lower temperature (rec. 40–42°C)', ja:'「∧」で温度アップ / 「∨」でダウン（推奨：40〜42°C）', zh:'∧升温 / ∨降温（建议40~42°C）', ko:'∧으로 온도 올리기 / ∨로 낮추기（권장：40~42°C）'},
+       {en:'Turn faucet to hot (red ▶︎) side for hot water', ja:'蛇口を「お湯（赤）」側に回すとお湯が出ます', zh:'将水龙头转向热水（红色）側出热水', ko:'수도꼭지를 온수（빨간쪽） 방향으로 돌리면 뜨거운 물이 나옵니다'},
+       {en:'After use: close faucet, press 運転 to turn off', ja:'使用後は蛇口を閉め「運転」で電源をオフ', zh:'使用后：关水龙头，按“运转”关闭', ko:'사용 후：수도꼭지 잠그고 "운전" 버튼으로 전원 끄기'},
      ]},
-    {id:'vent', em:'💨', en:'Ventilation Fan', ja:'換気扇',
+    {id:'vent', em:'💨', en:'Ventilation Fan', ja:'換気扇', zh:'换气扇', ko:'환기팬',
      steps:[
-       {en:'Kitchen fan switch: above the IH cooktop — ON before cooking, OFF after', ja:'キッチン換気扇スイッチ：IHコンロの上 / 料理前ON・後OFF'},
-       {en:'Shower room fan: switch on the right just outside shower entrance, below the light switch', ja:'シャワー室換気扇：シャワー室手前右側・電気スイッチの下のボタン'},
+       {en:'Kitchen fan switch: above the IH cooktop — ON before cooking, OFF after', ja:'キッチン換気扇スイッチ：IHコンロの上 / 料理前ON・後OFF', zh:'厨房换气扇开关在IH炉上方 / 烹饭前开，使用后关', ko:'주방 환기팬 스위치：IH 쿡탑 위 / 요리 전 켜고 사용 후 끄기'},
+       {en:'Shower room fan: switch on the right just outside shower entrance, below the light switch', ja:'シャワー室換気扇：シャワー室手前右側・電気スイッチの下のボタン', zh:'淤浴室换気扇：淤浴室入口右側，灯开关下方', ko:'샵우실 환기팬：샵우실 입구 오른쪽, 전등 스위치 아래 버튼'},
      ]},
-    {id:'shower', em:'🚿', en:'Shower', ja:'シャワー', brand:'INAX thermostatic faucet',
+    {id:'shower', em:'🚿', en:'Shower', ja:'シャワー', zh:'淋浴', ko:'샤워', brand:'INAX thermostatic faucet',
      steps:[
-       {en:'Turn on water heater first (see above)', ja:'先に給湯器の電源を入れる（上記参照）'},
-       {en:'Left knob: set temperature — red side = hotter, blue = cooler', ja:'左ノブで温度設定（赤=熱い / 青=冷たい）'},
-       {en:'Right lever (ON ▲): push to start water flow', ja:'右レバー（ON▲）を押すと水が出ます'},
-       {en:'After use: push lever back to stop, return knob to center', ja:'使用後はレバーを戻して水を止め、ノブを中央に戻してください'},
+       {en:'Turn on water heater first (see above)', ja:'先に給湯器の電源を入れる（上記参照）', zh:'请先开启热水器（参见上方）', ko:'먼저 온수기를 켜세요（위 참조）'},
+       {en:'Left knob: set temperature — red side = hotter, blue = cooler', ja:'左ノブで温度設定（赤=熱い / 青=冷たい）', zh:'左旋鈕：调节水温 — 红色側=热，蓝色側=冷', ko:'왼쪽 노브：온도 설정 — 빨간쪽=뜨거움, 파란쪽=차가움'},
+       {en:'Right lever (ON ▲): push to start water flow', ja:'右レバー（ON▲）を押すと水が出ます', zh:'右側抨杆（ON▲）：推上出水', ko:'오른쪽 레버（ON▲）： 밀면 물이 나옵니다'},
+       {en:'After use: push lever back to stop, return knob to center', ja:'使用後はレバーを戻して水を止め、ノブを中央に戻してください', zh:'使用后：将抨杆推回停止，旋鈕归中', ko:'사용 후： 레버를 되돌려 물 잔궸기, 노브를 중앙으로'},
      ]},
-    {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ', brand:'INAX',
+    {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ', zh:'厕所', ko:'화장실', brand:'INAX',
      steps:[
-       {en:'Toilet paper: on the shelf inside the toilet room', ja:'トイレットペーパー：トイレ内の棚の上'},
-       {en:'Flush: pull the lever beside the tank toward you', ja:'水を流す：タンク横のレバーを手前に引く'},
-       {en:'Bidet remote: on the wall (REAR WASH / BIDET / STOP)', ja:'ウォシュレット：壁のリモコン（おしり洗浄 / ビデ / 止）'},
+       {en:'Toilet paper: on the shelf inside the toilet room', ja:'トイレットペーパー：トイレ内の棚の上', zh:'卫生纸：放在厕所内的架子上', ko:'화장지： 화장실 내 선반 위에 있습니다'},
+       {en:'Flush: pull the lever beside the tank toward you', ja:'水を流す：タンク横のレバーを手前に引く', zh:'冲水：将水筒旁的拉杆向自己方向拉', ko:'물 내리기： 변기 탱크 옵 레버를 앞으로 당기세요'},
+       {en:'Bidet remote: on the wall (REAR WASH / BIDET / STOP)', ja:'ウォシュレット：壁のリモコン（おしり洗浄 / ビデ / 止）', zh:'工融座遥控器：在墙上（REAR WASH/BIDET/STOP）', ko:'비데 리모콘： 벽에 있습니다（REAR WASH/BIDET/STOP）'},
      ],
-     warn:'Flush ONLY toilet paper. All other items go in the trash.',
+     warn:'Flush ONLY toilet paper. All other items go in the trash.', warnZh:'只能冲压卫生纸。其他物品请投入垃圾桶。', warnKo:'화장지만 내릴 수 있습니다. 나머지는 쓰레기통에 버리세요.',
      warnJa:'流してよいのはトイレットペーパーのみ。ティッシュ等はゴミ箱へ。'},
-    {id:'wash', em:'👕', en:'Washing Machine', ja:'洗濯機',
+    {id:'wash', em:'👕', en:'Washing Machine', ja:'洗濯機', zh:'洗衣机', ko:'세탁기',
      steps:[
-       {en:'Machine & detergent: 3F balcony (detergent next to machine)', ja:'洗濯機・洗剤：3Fベランダ（洗剤は洗濯機の横）'},
-       {en:'Load laundry (up to 80%) · add detergent to drawer', ja:'洗濯物を入れ（8割まで）洗剤を投入口へ'},
-       {en:'Select COURSE → press START / PAUSE', ja:'コースを選択→スタート/一時停止を押す'},
-       {en:'Dry laundry indoors (not on balcony) · hangers & clips: Storage C', ja:'洗濯物は室内で干してください（ベランダ不可）· ハンガー・洗濯バサミ：収納C'},
+       {en:'Machine & detergent: 3F balcony (detergent next to machine)', zh:'洗衣机和洗浤剂：3楼阳台（洗浤剂在机旁）', ko:'세탁기·세제：3F 베란다（세제는 세탁기 옥）', ja:'洗濯機・洗剤：3Fベランダ（洗剤は洗濯機の横）'},
+       {en:'Load laundry (up to 80%) · add detergent to drawer', zh:'放入衣物（80%）·将洗浤剂加入投放口', ko:'세탁물 넣기（80%까지）· 세제를 투입구에 넣기', ja:'洗濯物を入れ（8割まで）洗剤を投入口へ'},
+       {en:'Select COURSE → press START / PAUSE', ja:'コースを選択→スタート/一時停止を押す', zh:'选择洗浤程序→按“开始/暂停”', ko:'코스 선택 → 시작/일시정지 누르기'},
+       {en:'Dry laundry indoors (not on balcony) · hangers & clips: Storage C', zh:'室内晒衣（阳台不可）·衣架和晚夹：收納C', ko:'실내에서 건조（베란다 불가）· 옷걸이·집게：수늩 C', ja:'洗濯物は室内で干してください（ベランダ不可）· ハンガー・洗濯バサミ：収納C'},
      ],
-     warn:'Hours: 8:00 AM – 8:00 PM only. Not liable for color bleeding or shrinkage.',
+     warn:'Hours: 8:00 AM – 8:00 PM only. Not liable for color bleeding or shrinkage.', warnZh:'使用时间：上午10点至晚䌢8点。对于脱色或缩水，我们概不负责。', warnKo:'사용 가능 시간：오전 8시~오후 8시. 색 빠짐 수축에 대해서는 책임지지 않습니다.',
      warnJa:'使用可能時間8:00〜20:00。色移り・縮みについては責任を負いかねます。'},
-    {id:'fire', em:'🧯', en:'Fire Suppression Sheet', ja:'消火シート',
+    {id:'fire', em:'🧯', en:'Fire Suppression Sheet', ja:'消火シート', zh:'灭火毯', ko:'소화 시트',
      steps:[
-       {en:'Remove sheet from its case', ja:'袋から消火シートを取り出す'},
-       {en:'Hold both ends firmly and cover the fire from above', ja:'両端を持ち、上からかぶせる'},
-       {en:'Wait until the flame is out — do NOT remove the sheet', ja:'炎が消えるまでそのまま待つ（シートは剥がさない）'},
+       {en:'Remove sheet from its case', ja:'袋から消火シートを取り出す', zh:'从袋中取出灭火毯', ko:'케이스에서 소화 시트를 꺼내세요'},
+       {en:'Hold both ends firmly and cover the fire from above', ja:'両端を持ち、上からかぶせる', zh:'紧握两端，从上方覆盖火焰', ko:'양끝을 단단히 잊고 위에서 덮으세요'},
+       {en:'Wait until the flame is out — do NOT remove the sheet', ja:'炎が消えるまでそのまま待つ（シートは剥がさない）', zh:'等待火焰息灭——请勿移开灭火毯', ko:'불꽃이 꺼질 때까지 기다리세요 — 시트를 제거하지 마세요'},
      ],
-     warn:'In any emergency: call 119 FIRST. Use sheet only if safe.',
+     warn:'In any emergency: call 119 FIRST. Use sheet only if safe.', warnZh:'絊急情况：先拨打119。确认安全后再使用灭火毯。', warnKo:'비상시： 먼저 119에 전화하세요. 안전한 경우에만 소화 시트 사용.',
      warnJa:'緊急時はまず119番。安全を確認してから消火。'},
   ],
   rules:[
-    {id:'tp', em:'🚽', en:'Toilet — flush TP only!', ja:'トイレ：流せるのはトイレットペーパーのみ', imp:true,
-     text:'Only toilet paper may be flushed. Tissues, wipes, and sanitary products MUST go in the trash bin. You may be charged repair costs if the drain is blocked.',
+    {id:'tp', em:'🚽', en:'Toilet — flush TP only!', zh:'厕所—只能冲卫生纸！', ko:'화장실—화장지만 내리기！', ja:'トイレ：流せるのはトイレットペーパーのみ', imp:true,
+     text:'Only toilet paper may be flushed. Tissues, wipes, and sanitary products MUST go in the trash bin. You may be charged repair costs if the drain is blocked.', textZh:'只能冲卫生纸。其他物品请投入垃圾桶。堡塞时可能承担修理费。', textKo:'화장지만 내릴 수 있습니다. 나머지는 쓰레기통에 버리세요. 막힐 경우 수리비를 부담하실 수 있습니다.',
      textJa:'トイレに流せるのはトイレットペーパーのみ。ティッシュ・生理用品等はゴミ箱へ。詰まった場合、修理費用をご負担いただく場合があります。'},
-    {id:'garbage', em:'🗑️', en:'Garbage — sort & bin', ja:'ゴミの分別',
-     text:'Sort: Burnable/Non-burnable (same bin OK) and Recyclables (separate bin). Indoor bins → when full, empty into the large outdoor bin on the premises. Do not take garbage anywhere else.',
+    {id:'garbage', em:'🗑️', en:'Garbage — sort & bin', zh:'垃圾分类', ko:'쓰레기 분리', ja:'ゴミの分別',
+     text:'Sort: Burnable/Non-burnable (same bin OK) and Recyclables (separate bin). Indoor bins → when full, empty into the large outdoor bin on the premises. Do not take garbage anywhere else.', textZh:'垃圾请分类投入室内垃圾桶。满了则将局内大垃圾桶倒出。请勿将垃圾带到其他地方。', textKo:'쓰레기는 분리하여 실내 쓰레기통에 버리세요. 가득 찼만 시설 내 큰 쓰레기통에 담아주세요. 다른 장소로는 가져가지 마세요.',
      textJa:'可燃・不燃は同じゴミ箱でOK。資源ごみは別に。いっぱいになったら施設内の大きなゴミ箱へ。他の場所へは持っていかないでください。'},
-    {id:'staff', em:'🚫', en:'Staff-only areas', ja:'立ち入り禁止エリア',
-     text:'Do not open or enter doors marked "STAFF ONLY".',
+    {id:'staff', em:'🚫', en:'Staff-only areas', zh:'员工专用区域', ko:'직원 전용 구역', ja:'立ち入り禁止エリア',
+     text:'Do not open or enter doors marked "STAFF ONLY".', textZh:'请勿打开标有“STAFF ONLY”的门。', textKo:'"스태프 오니리"라고 표시된 문은 열지 마세요.',
      textJa:'「STAFF ONLY」と書かれた扉は開けないでください。'},
-    {id:'guests', em:'👤', en:'Registered guests only', ja:'ゲスト以外の入室禁止', imp:true,
-     text:'Only guests listed in the reservation may enter. Friends or visitors are not permitted inside.',
-     textJa:'予約された方以外の入室はお断りしています。'},
-    {id:'lights', em:'💡', en:'Lights off when leaving', ja:'外出時の消灯',
-     text:'Please turn off lights and TV where possible when you leave.',
+    {id:'guests', em:'👤', en:'Registered guests only', zh:'仅限预约住客', ko:'예약 투숙객만 입실', ja:'ゲスト以外の入室禁止', imp:true,
+     text:'Only guests listed in the reservation may enter. Friends or visitors are not permitted inside.', textZh:'只有已登记的客人才可入住。朋友或访客不允许入内。', textKo:'예약된 투숙객만 입실 가능합니다. 친구나 방문객의 입실은 금지됩니다.',
+     textJa:'予約された方以外の入室はお断りしています。', textZh:'只有已登记的客人才可入住。', textKo:'예약된 투숙객만 입실 가능합니다.'},
+    {id:'lights', em:'💡', en:'Lights off when leaving', zh:'外出时关灯', ko:'외출 시 소등', ja:'外出時の消灯',
+     text:'Please turn off lights and TV where possible when you leave.', textZh:'外出时请尽量关闭灯光和电视。', textKo:'외출 시 가능한 한 조명·TV 전원을 꼭질주세요.',
      textJa:'外出の際は照明・テレビ等、なるべく電源をお切りください。'},
-    {id:'lock', em:'🔑', en:'Lock the door', ja:'戸締まり',
-     text:'Always lock the front door when leaving or going to sleep.',
+    {id:'lock', em:'🔑', en:'Lock the door', zh:'锁好门', ko:'문 잠금', ja:'戸締まり',
+     text:'Always lock the front door when leaving or going to sleep.', textZh:'外出或就寡时，请务必锁好大门。', textKo:'외출·취침 시에는 반드시 현관문을 잠급세요.',
      textJa:'外出時・就寝時は必ず玄関のカギを施錠してください。'},
-    {id:'smoke', em:'🚭', en:'No smoking — inside & surrounding area', ja:'施設内・周辺禁煙', imp:true,
-     text:'Smoking is strictly prohibited inside the property and in the surrounding area. A cleaning fee (approx. ¥20,000–30,000) may be charged for violations.',
+    {id:'smoke', em:'🚭', en:'No smoking — inside & surrounding area', zh:'居内及周边禁烟', ko:'시설 내·주변 금연', ja:'施設内・周辺禁煙', imp:true,
+     text:'Smoking is strictly prohibited inside the property and in the surrounding area. A cleaning fee (approx. ¥20,000–30,000) may be charged for violations.', textZh:'居内及周边严禁吸烟。违规可能收取清洁费（约2万3万日元）。', textKo:'시설 내와 주변은 전면 금연입니다. 위반 시 정소 비용（약 2만~3만 엔）이 청구될 수 있습니다.',
      textJa:'施設内および施設周辺は全面禁煙。違反した場合クリーニング費用（目安2〜3万円）をご請求する場合があります。'},
-    {id:'smarea', em:'🚬', en:'Smoking areas nearby', ja:'近隣の喫煙可能な場所',
-     text:'Please check the QR code below for nearby designated smoking areas.',
+    {id:'smarea', em:'🚬', en:'Smoking areas nearby', zh:'附近吸烟区', ko:'근첫 흑연 구역', ja:'近隣の喫煙可能な場所',
+     text:'Please check the QR code below for nearby designated smoking areas.', textZh:'请扫描下方二维码查看附近吸烟区。', textKo:'근처 지정 홉연 구역은 아래 QR코드로 확인하세요.',
      textJa:'近隣の喫煙可能な場所は下記のQRコードよりご確認ください。',
      imgLabel:'Google マップ',
      img:'data:image/jpeg;base64,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'},
-    {id:'fridge', em:'🧊', en:'Refrigerator', ja:'冷蔵庫',
-     text:'The refrigerator is for your use. Remove all food at check-out.',
+    {id:'fridge', em:'🧊', en:'Refrigerator', zh:'冰符1使用', ko:'냉장고 사용', ja:'冷蔵庫',
+     text:'The refrigerator is for your use. Remove all food at check-out.', textZh:'冰符1请随意使用。退房时请将食物全部带走或处置。', textKo:'냉장고는 자유롭게 사용하세요. 체크아웃 시 음식을 모두 싼게가거나 처리해주세요.',
      textJa:'冷蔵庫はご自由にお使いください。チェックアウト時は食品をすべてお持ち帰りいただくか処分してください。'},
-    {id:'shoes', em:'👟', en:'No shoes indoors', ja:'土足禁止',
-     text:'Please remove shoes at the entrance. Slippers are provided.',
-     textJa:'玄関で靴を脱いでお上がりください。スリッパをご用意しています。'},
-    {id:'noise', em:'🔇', en:'Quiet hours: 21:00 – 7:00', ja:'騒音注意', imp:true,
-     text:'Please keep noise to a minimum between 9 PM and 7 AM. No loud voices, music, or TV. Please be considerate of neighbors.',
+    {id:'shoes', em:'👟', en:'No shoes indoors', zh:'室内禁止穿鞋', ko:'실내 신발 금지', ja:'土足禁止',
+     text:'Please remove shoes at the entrance. Slippers are provided.', textZh:'请在门口脱鞋。备有拖鞋供您使用。', textKo:'현관에서 신발을 벗고 들어오세요. 슬리퍼가 준비되어 있습니다.',
+     textJa:'玄関で靴を脱いでお上がりください。スリッパをご用意しています。', textZh:'请在门口脱鞋。备有拖鞋供您使用。', textKo:'현관에서 신발을 벗고 들어오세요. 슬리퍼가 준비되어 있습니다.'},
+    {id:'noise', em:'🔇', en:'Quiet hours: 21:00 – 7:00', zh:'安静时间：21:00–7:00', ko:'조용한 시간：21:00–7:00', ja:'騒音注意', imp:true,
+     text:'Please keep noise to a minimum between 9 PM and 7 AM. No loud voices, music, or TV. Please be considerate of neighbors.', textZh:'晚䌢9点至早䌢7点请保持安静。请配虑邻居。', textKo:'밤 9시~아침 7시는 조용히 지내주세요. 이웃에 배려 부탁드립니다.',
      textJa:'夜21時〜翌朝7時は特に静かにお過ごしください。大声・音楽・テレビの大音量はご遠慮ください。'},
-    {id:'stream', em:'📺', en:'Netflix / YouTube', ja:'ストリーミングサービス',
-     text:'Please use your own account for Netflix, YouTube, etc. You MUST log out before check-out.',
+    {id:'stream', em:'📺', en:'Netflix / YouTube', zh:'Netflix / YouTube 사용', ko:'Netflix / YouTube 사용', ja:'ストリーミングサービス',
+     text:'Please use your own account for Netflix, YouTube, etc. You MUST log out before check-out.', textZh:'请使用您自己的Netflix、YouTube等帐号。退房前请务必登出。', textKo:'Netflix·YouTube 등은 본인 계정을 사용하세요. 체크아웃 전에 반드시 로그아웃하세요.',
      textJa:'NetflixやYouTube等はご自身のアカウントをご使用ください。チェックアウト前に必ずログアウトしてください。'},
-    {id:'checkout', em:'🏁', en:'Check-out time: 10:00 AM', ja:'チェックアウト：10:00',
-     text:'Please check out by 10:00 AM. Leave the futon as-is — no need to tidy.',
+    {id:'checkout', em:'🏁', en:'Check-out time: 10:00 AM', zh:'退房时间：上午10:00', ko:'체크아웃：오전 10시', ja:'チェックアウト：10:00',
+     text:'Please check out by 10:00 AM. Leave the futon as-is — no need to tidy.', textZh:'请在上午10点前退房。被子原样放着即可。', textKo:'체크아웃은 오전 10시까지 부탁드립니다. 이불은 그대로 두셔도 됩니다.',
      textJa:'チェックアウトは10:00までにお願いします。布団はそのままで構いません。'},
   ],
   emer:{
     address:'1-2-27 Bainan, Nishinari-ku, Osaka 〒557-0014',
-    hospital:{em:'🏥', en:'Nearest Hospital', ja:'最寄りの医療機関', name:'いこいクリニック', tel:'06-6633-1110'},
-    police:{em:'👮', en:'Nearest Police', ja:'最寄りの警察署', name:'西成警察署', tel:'06-6648-1234'},
-    fire:{em:'🚒', en:'Nearest Fire Dept', ja:'最寄りの消防署', name:'西成消防署', tel:'06-6653-0119'},
+    hospital:{em:'🏥', en:'Nearest Hospital', zh:'最近的医院', ko:'가장 가까운 병원', ja:'最寄りの医療機関', name:'いこいクリニック', tel:'06-6633-1110'},
+    police:{em:'👮', en:'Nearest Police', zh:'最近的警察局', ko:'가장 가까운 경찰서', ja:'最寄りの警察署', name:'西成警察署', tel:'06-6648-1234'},
+    fire:{em:'🚒', en:'Nearest Fire Dept', zh:'最近的消防署', ko:'가장 가까운 소방서', ja:'最寄りの消防署', name:'西成消防署', tel:'06-6653-0119'},
   }
 },
 // ──────────────────────────────────────────
@@ -385,126 +407,125 @@ tamatsu: {
   accent:'#3A7D8C', accentLt:'#EBF6F8',
   address:'3-14-7 Tamatsu, Higashinari-ku, Osaka', addressJa:'大阪市東成区玉津3丁目14-7',
   access:[
-    {en:'Tsuruhashi Sta. (JR Loop / Kintetsu) — 13 min walk', ja:'JR環状線・近鉄　鶴橋駅　徒歩13分'},
-    {en:'Imazato Sta. (Sennichimae Line) — 9 min walk', ja:'地下鉄千日前線　今里駅　徒歩9分'},
-    {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）'},
+    {en:'Tsuruhashi Sta. (JR Loop / Kintetsu) — 13 min walk', zh:'鹤橋站（JR环状线/近鐵）步行13分钟', ko:'쿎루하시역（JR 순환선/진테츠） 도보 13분', ja:'JR環状線・近鉄　鶴橋駅　徒歩13分'},
+    {en:'Imazato Sta. (Sennichimae Line) — 9 min walk', zh:'今里站（千日前线）步行9分钟', ko:'이마자토역（센니치마에선） 도보 9분', ja:'地下鉄千日前線　今里駅　徒歩9分'},
+    {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）', zh:'无停车场，请使用附近收费停车场', ko:'주차장 없음 — 근첫 코인 주차장 이용'},
   ],
   wifi:{id:'NSD1K-0548-a', pass:'faH5YyGTFUYCc'},
-  floors:'1F · 2F',
-  floorsJa:'1F · 2F',
-  maxGuests:'8', amenities:'Towels & amenities for all guests / タオル・アメニティ人数分あり',
+  floors:'1F · 2F', floorsJa:'1F · 2F', floorsZh:'1F · 2F', floorsKo:'1F · 2F',
+  maxGuests:'8', amenities:'Towels & amenities for all guests', amenitiesJa:'タオル・アメニティ人数分あり', amenitiesZh:'毛巾和便利设施人数齐备', amenitiesKo:'수건·어메니티 인원수만큼 준비',
   manual:[
-    {id:'ac', em:'❄️', en:'Air Conditioner', ja:'エアコン',
+    {id:'ac', em:'❄️', en:'Air Conditioner', ja:'エアコン', zh:'空调', ko:'에어컨',
      steps:[
-       {en:'Remote is near the AC unit', ja:'リモコンはエアコン付近にあります'},
-       {en:'Press COOL / HEAT / DRY to select mode', ja:'冷房・暖房・除湿ボタンでモード選択'},
-       {en:'Adjust temperature with ▲ / ▼ (rec. Cool 27°C / Heat 22°C)', ja:'温度▲▼で調整（目安：冷27°C / 暖22°C）'},
-       {en:'Press STOP or OFF to turn off', ja:'停止 / OFFボタンで運転停止'},
-       {en:'Turn off when leaving or sleeping', ja:'外出時・就寝時は必ず電源をお切りください'},
+       {en:'Remote is near the AC unit', zh:'遥控器在空调附近', ko:'리모콘은 에어컨 근처에 있습니다', ja:'リモコンはエアコン付近にあります'},
+       {en:'Press COOL / HEAT / DRY to select mode', ja:'冷房・暖房・除湿ボタンでモード選択', zh:'按冷房/暖房/除湿选择模式', ko:'낙방/난방/제습 버튼으로 모드 선택'},
+       {en:'Adjust temperature with ▲ / ▼ (rec. Cool 27°C / Heat 22°C)', zh:'用温度▲▼调节（建议：制冷27°C / 制缹22°C）', ko:'온도▲▼로 조절（권장：낙방 27°C / 난방 22°C）', ja:'温度▲▼で調整（目安：冷27°C / 暖22°C）'},
+       {en:'Press STOP or OFF to turn off', zh:'按停止/OFF关机', ko:'정지/OFF 버튼으로 끄기', ja:'停止 / OFFボタンで運転停止'},
+       {en:'Turn off when leaving or sleeping', ja:'外出時・就寝時は必ず電源をお切りください', zh:'外出或就寡时请关闭电源', ko:'외출·취침 시에는 전원을 끄세요'},
      ]},
-    {id:'stove', em:'🍳', en:'Stove / コンロ', ja:'コンロの使い方',
+    {id:'stove', em:'🍳', en:'Stove / コンロ', ja:'コンロの使い方', zh:'炉灶使用方法', ko:'가스레인지 사용법',
      steps:[
-       {en:'Turn the knob and press to ignite — hold until lit', ja:'つまみを回して押し込む。着火するまで押し続ける'},
-       {en:'Adjust flame with the knob', ja:'つまみで火力を調整'},
-       {en:'Turn knob to OFF after use', ja:'使用後はつまみをOFFに戻す'},
+       {en:'Turn the knob and press to ignite — hold until lit', zh:'旋转旋鈕并按下，持续按住直至点火', ko:'노브를 돌리면서 눌러주세요. 불이 방화될 때까지 누르고 계세요', ja:'つまみを回して押し込む。着火するまで押し続ける'},
+       {en:'Adjust flame with the knob', zh:'用旋鈕调节火力', ko:'노브로 화력 조절', ja:'つまみで火力を調整'},
+       {en:'Turn knob to OFF after use', zh:'使用後将旋鈕转回OFF', ko:'사용 후 노브를 OFF로 돌리세요', ja:'使用後はつまみをOFFに戻す'},
      ],
-     warn:'Always use ventilation fan when cooking. Never leave the stove unattended.',
+     warn:'Always use ventilation fan when cooking. Never leave the stove unattended.', warnZh:'烹饭时务必使用换気扇。不可离开灰的旁边。', warnKo:'요리 중에는 단드시 환기팬을 사용하세요. 자리를 비우지 마세요.',
      warnJa:'料理中は換気扇を必ず使用。その場を離れないでください。'},
-    {id:'micro', em:'📡', en:'Microwave', ja:'電子レンジ',
+    {id:'micro', em:'📡', en:'Microwave', ja:'電子レンジ', zh:'微波炉', ko:'전자레인지',
      steps:[
-       {en:'Place food in microwave-safe container inside', ja:'耐熱容器に食品を入れ中に置く'},
-       {en:'Set time and press START', ja:'時間を設定してスタートを押す'},
-       {en:'Wipe interior after use', ja:'使用後は庫内を拭いてください'},
+       {en:'Place food in microwave-safe container inside', ja:'耐熱容器に食品を入れ中に置く', zh:'将食物放入耐热容器中放入微波炉', ko:'내열 용기에 음식을 담아 전자레인지에 넣으세요'},
+       {en:'Set time and press START', ja:'時間を設定してスタートを押す', zh:'设定时间并按开始', ko:'시간을 설정하고 시작을 누르세요'},
+       {en:'Wipe interior after use', ja:'使用後は庫内を拭いてください', zh:'使用后请擦拭内部', ko:'사용 후 내부를 닦아주세요'},
      ],
-     warn:'No metal containers or aluminum foil.',
+     warn:'No metal containers or aluminum foil.', warnZh:'禁止使用金属容器或铝答。', warnKo:'금속 용기·알루미늑 호일 사용 불가.',
      warnJa:'金属容器・アルミホイル使用不可。'},
-    {id:'heater', em:'🔥', en:'Water Heater', ja:'給湯器',
+    {id:'heater', em:'🔥', en:'Water Heater', ja:'給湯器', zh:'热水器', ko:'온수기',
      steps:[
-       {en:'Press POWER / 運転 — display lights up', ja:'「運転」ボタンを押す（ランプ点灯）'},
-       {en:'Set temperature ▲ / ▼ (rec. 40–42°C)', ja:'温度▲▼で設定（推奨：40〜42°C）'},
-       {en:'Turn faucet to hot (red) side for hot water', ja:'蛇口を「お湯（赤）」側に回す'},
-       {en:'After use: close faucet and press power off', ja:'使用後は蛇口を閉めて電源をオフ'},
+       {en:'Press POWER / 運転 — display lights up', zh:'按“运转”键（显示屏亮起）', ko:'"운전" 버튼 누르기（디스플레이 점등）', ja:'「運転」ボタンを押す（ランプ点灯）'},
+       {en:'Set temperature ▲ / ▼ (rec. 40–42°C)', zh:'用温度▲▼设定（建议40~42°C）', ko:'온도▲▼로 설정（권장：40~42°C）', ja:'温度▲▼で設定（推奨：40〜42°C）'},
+       {en:'Turn faucet to hot (red) side for hot water', zh:'将水龙头转向热水（红色）側出热水', ko:'수도꼭지를 온수（빨간쪽） 방향으로', ja:'蛇口を「お湯（赤）」側に回す'},
+       {en:'After use: close faucet and press power off', zh:'使用后：关水龙头，关闭电源', ko:'사용 후： 수도꼭지 잠그고 전원 끄기', ja:'使用後は蛇口を閉めて電源をオフ'},
      ]},
-    {id:'vent', em:'💨', en:'Ventilation Fan', ja:'換気扇',
+    {id:'vent', em:'💨', en:'Ventilation Fan', ja:'換気扇', zh:'换气扇', ko:'환기팬',
      steps:[
-       {en:'Turn ON before cooking, OFF after use', ja:'料理前にON、使用後はOFF'},
-       {en:'Bathroom fan: switch near bathroom entrance', ja:'お風呂換気扇：浴室入口付近のスイッチ'},
+       {en:'Turn ON before cooking, OFF after use', zh:'烹饭前开，使用后关', ko:'요리 전 켜고, 사용 후 끄기', ja:'料理前にON、使用後はOFF'},
+       {en:'Bathroom fan: switch near bathroom entrance', zh:'浴室换気扇开关在浴室入口附近', ko:'욕실 환기팬： 욕실 입구 근처 스위치', ja:'お風呂換気扇：浴室入口付近のスイッチ'},
      ]},
-    {id:'bath', em:'🛁', en:'Bath', ja:'お風呂の使い方',
+    {id:'bath', em:'🛁', en:'Bath', ja:'お風呂の使い方', zh:'浴室使用方法', ko:'욕실 사용법',
      steps:[
-       {en:'Turn on water heater first (see above)', ja:'先に給湯器を起動（上記参照）'},
-       {en:'Turn faucet to hot side and fill tub to desired level', ja:'蛇口をお湯側に回し、適量まで湯を張る'},
-       {en:'After use, drain the tub and wipe it down lightly', ja:'使用後は排水し、浴槽を軽く拭いてください'},
+       {en:'Turn on water heater first (see above)', ja:'先に給湯器を起動（上記参照）', zh:'请先开启热水器（参见上方）', ko:'먼저 온수기를 켜세요（위 참조）'},
+       {en:'Turn faucet to hot side and fill tub to desired level', zh:'将水龙头转向热水側，扬水至需要的水位', ko:'수도꼭지를 온수 방향으로 돌려 월풀 만큼 지워세요', ja:'蛇口をお湯側に回し、適量まで湯を張る'},
+       {en:'After use, drain the tub and wipe it down lightly', zh:'使用后排水，轻擦浴缸', ko:'사용 후 물을 빼고 욕조를 가볍게 닦아주세요', ja:'使用後は排水し、浴槽を軽く拭いてください'},
      ]},
-    {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ',
+    {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ', zh:'厕所', ko:'화장실',
      steps:[
-       {en:'Toilet paper: stored under the washbasin', ja:'トイレットペーパー：洗面台の下に保管'},
+       {en:'Toilet paper: stored under the washbasin', zh:'卫生纸存放在洗手台下方', ko:'화장지： 세면대 아래에 보관', ja:'トイレットペーパー：洗面台の下に保管'},
      ],
      warn:'Flush ONLY toilet paper. All other items go in the trash.',
      warnJa:'流してよいのはトイレットペーパーのみ。ティッシュ等はゴミ箱へ。'},
-    {id:'wash', em:'👕', en:'Washing Machine', ja:'洗濯機',
+    {id:'wash', em:'👕', en:'Washing Machine', ja:'洗濯機', zh:'洗衣机', ko:'세탁기',
      steps:[
-       {en:'Detergent: next to the washing machine', ja:'洗剤：洗濯機の横'},
-       {en:'Load laundry (up to 80%) · add detergent', ja:'洗濯物を入れ（8割まで）洗剤を投入'},
-       {en:'Select cycle and press START', ja:'コースを選んでスタートを押す'},
-       {en:'Dry laundry on 2F balcony', ja:'洗濯物は2Fベランダへ'},
+       {en:'Detergent: next to the washing machine', zh:'洗浤剂在洗衣机旁边', ko:'세제： 세탁기 옵', ja:'洗剤：洗濯機の横'},
+       {en:'Load laundry (up to 80%) · add detergent', zh:'放入衣物（不超过80%）·加入洗浤剂', ko:'세탁물 넣기（80%까지）· 세제 투입', ja:'洗濯物を入れ（8割まで）洗剤を投入'},
+       {en:'Select cycle and press START', zh:'选择洗浤程序并按开始', ko:'코스 선택 후 시작 누르기', ja:'コースを選んでスタートを押す'},
+       {en:'Dry laundry on 2F balcony', zh:'在2楼阳台晒衣', ko:'2F 베란다에서 세탁물 말리기', ja:'洗濯物は2Fベランダへ'},
      ]},
-    {id:'fire', em:'🧯', en:'Fire Extinguisher', ja:'消火器',
+    {id:'fire', em:'🧯', en:'Fire Extinguisher', ja:'消火器', zh:'灭火器', ko:'소화기',
      steps:[
-       {en:'1F: located in the changing room (脱衣所)', ja:'1F：脱衣所に設置'},
-       {en:'2F: located in Bedroom A (寝室A)', ja:'2F：寝室Aに設置'},
-       {en:'Pull safety pin → aim at base of fire → squeeze lever', ja:'安全ピンを引き抜く → 炎の根元に向ける → レバーを強く握る'},
+       {en:'1F: located in the changing room (脱衣所)', zh:'1楼：更衣室（脱衣所）', ko:'1F： 탈의실（脱衣所）에 설치', ja:'1F：脱衣所に設置'},
+       {en:'2F: located in Bedroom A (寝室A)', ja:'2F：寝室Aに設置', zh:'2楼：寝室A', ko:'2F： 침실 A에 설치'},
+       {en:'Pull safety pin → aim at base of fire → squeeze lever', ja:'安全ピンを引き抜く → 炎の根元に向ける → レバーを強く握る', zh:'拔出保险销→将嘴嘴对准火焰根部→用力握住手柄', ko:'안전핀 제거→노즘을 불꽃 밑둥에 겨냥→레버를 세게 쥐세요'},
      ],
      warn:'Call 119 FIRST. Use extinguisher only if safe to do so.',
      warnJa:'まず119番。安全が確認できる場合のみ使用。'},
   ],
   rules:[
-    {id:'tp', em:'🚽', en:'Toilet — flush TP only!', ja:'トイレ：流せるのはトイレットペーパーのみ', imp:true,
-     text:'Only toilet paper may be flushed. Tissues, wipes, and sanitary products MUST go in the trash bin.',
+    {id:'tp', em:'🚽', en:'Toilet — flush TP only!', zh:'厕所—只能冲卫生纸！', ko:'화장실—화장지만 내리기！', ja:'トイレ：流せるのはトイレットペーパーのみ', imp:true,
+     text:'Only toilet paper may be flushed. Tissues, wipes, and sanitary products MUST go in the trash bin.', textZh:'只能冲卫生纸。其他物品请投入垃圾桶。', textKo:'화장지만 내릴 수 있습니다. 나머지는 쓰레기통에 버리세요.',
      textJa:'トイレに流せるのはトイレットペーパーのみ。ティッシュ・生理用品等はゴミ箱へ。'},
-    {id:'garbage', em:'🗑️', en:'Garbage — sort & bin', ja:'ゴミの捨て方',
-     text:'Burnable & Non-burnable can go in the SAME bin. Recyclables (PET bottles, cans, etc.) must go in a SEPARATE bin. When an indoor bin is full, empty it into the large bin outside the entrance.',
+    {id:'garbage', em:'🗑️', en:'Garbage — sort & bin', zh:'垃圾分类', ko:'쓰레기 분리', ja:'ゴミの捨て方',
+     text:'Burnable & Non-burnable can go in the SAME bin. Recyclables (PET bottles, cans, etc.) must go in a SEPARATE bin. When an indoor bin is full, empty it into the large bin outside the entrance.', textZh:'可燃和不可燃垃圾可放入同一垃圾桶。塑料瓶等可回收物请单独分类。满了就将内地垃圾桶居履带剑入门外大垃圾桶。', textKo:'가연·불연 쓰레기는 같은 통에 넣어도 됩니다. 페트병 등 재활용품은 개별 분리. 가득 찼만 현관 입구 바깥 대형 쓰레기통에 비워주세요.',
      textJa:'可燃・不燃は同じゴミ箱でOK。ペットボトル等の資源ごみは別のゴミ箱へ。いっぱいになったら玄関外の大きなゴミ箱へ。'},
-    {id:'staff', em:'🚫', en:'Staff-only areas', ja:'立ち入り禁止エリア',
+    {id:'staff', em:'🚫', en:'Staff-only areas', zh:'员工专用区域', ko:'직원 전용 구역', ja:'立ち入り禁止エリア',
      text:'Do not enter or touch areas marked "STAFF ONLY".',
-     textJa:'「STAFF ONLY」と表示されているエリアへの立ち入りはご遠慮ください。'},
-    {id:'guests', em:'👤', en:'Registered guests only', ja:'ゲスト以外の入室禁止', imp:true,
-     text:'Only guests listed in the reservation may enter. Friends or visitors are not permitted inside.',
+     textJa:'「STAFF ONLY」と表示されているエリアへの立ち入りはご遠慮ください。', textZh:'请勿打开或进入标有“STAFF ONLY”的门。', textKo:'“STAFF ONLY”라고 표시된 문은 열지 마세요.'},
+    {id:'guests', em:'👤', en:'Registered guests only', zh:'仅限预约住客', ko:'예약 투숙객만 입실', ja:'ゲスト以外の入室禁止', imp:true,
+     text:'Only guests listed in the reservation may enter. Friends or visitors are not permitted inside.', textZh:'只有已登记的客人才可入住。朋友或访客不允许入内。', textKo:'예약된 투숙객만 입실 가능합니다. 친구나 방문객의 입실은 금지됩니다.',
      textJa:'予約された方以外の入室はお断りしています。'},
-    {id:'lights', em:'💡', en:'Lights off when leaving', ja:'外出時の消灯',
+    {id:'lights', em:'💡', en:'Lights off when leaving', zh:'外出时关灯', ko:'외출 시 소등', ja:'外出時の消灯',
      text:'Please turn off lights and appliances when you leave.',
-     textJa:'外出の際は照明・家電の電源をお切りください。'},
-    {id:'lock', em:'🔑', en:'Lock the Door (LOCKSTATE)', ja:'戸締まり',
-     text:'When leaving: close the door, press any button on the LOCKSTATE keypad, and check the door is locked. After entering: manually lock the door from inside.',
+     textJa:'外出の際は照明・家電の電源をお切りください。', textZh:'外出时请关闭灯光和家电电源。', textKo:'외출 시 조명·가전의 전원을 꼭지기 바랍니다.'},
+    {id:'lock', em:'🔑', en:'Lock the Door (LOCKSTATE)', zh:'锁好门 (LOCKSTATE)', ko:'문 잠금 (LOCKSTATE)', ja:'戸締まり',
+     text:'When leaving: close the door, press any button on the LOCKSTATE keypad, and check the door is locked. After entering: manually lock the door from inside.', textZh:'出门时：关门，按LOCKSTATE键盘任意按键，确认门已上锁。入庆后：手动上锁。', textKo:'외출 시： 문을 닫고 LOCKSTATE 키패드 버튼을 눌러 잠금 확인. 입실 후： 수동으로 잠글세요.',
      textJa:'外出時：扉を閉めて「LOCKSTATE」のボタンを押し、扉にカギがかかっているか確認してください。入室後：手動で鍵を閉めてください。',
      img:'data:image/jpeg;base64,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'},
-    {id:'smoke', em:'🚭', en:'No smoking — inside & surrounding area', ja:'施設内・周辺禁煙', imp:true,
-     text:'Smoking is strictly prohibited inside the property and in the surrounding area. A cleaning fee (approx. ¥20,000–30,000) may be charged.',
+    {id:'smoke', em:'🚭', en:'No smoking — inside & surrounding area', zh:'居内及周边禁烟', ko:'시설 내·주변 금연', ja:'施設内・周辺禁煙', imp:true,
+     text:'Smoking is strictly prohibited inside the property and in the surrounding area. A cleaning fee (approx. ¥20,000–30,000) may be charged.', textZh:'居内及周边严禁吸烟。违规可能收取清洁费（约2~3万日元）。', textKo:'시설 내와 주변은 전면 금연. 위반 시 정소 비용（약 2만~3만 엔）이 청구될 수 있습니다.',
      textJa:'施設内・周辺は全面禁煙。違反の場合クリーニング費用（目安2〜3万円）をご請求する場合があります。'},
-    {id:'smarea', em:'🚬', en:'Smoking areas nearby', ja:'近隣の喫煙可能な場所',
-     text:"Hollys Coffee Life Imazato store, or Osaka City Designated Smoking Area near Tsuruhashi Station (3-18-8 Higashikobashi, Higashinari-ku, Osaka).",
+    {id:'smarea', em:'🚬', en:'Smoking areas nearby', zh:'附近吸烟区', ko:'근첫 흑연 구역', ja:'近隣の喫煙可能な場所',
+     text:"Hollys Coffee Life Imazato store, or Osaka City Designated Smoking Area near Tsuruhashi Station (3-18-8 Higashikobashi, Higashinari-ku, Osaka).", textZh:'ホリーズカフェライフ今里店，或鹤橋站前大阪市指定吸烟区（东成区东小樋3-18-8）。', textKo:'홀리즈커피라이프 이마자토점, 또는 쿎루하시역 앞 오사카시 시 지정 퉙연 구역（히가시나리구 히가시코바시 3-18-8）.',
      textJa:'ホリーズカフェライフ今里店、または鶴橋駅前の大阪市指定喫煙所（大阪市東成区東小橋3-18-8）。'},
-    {id:'fridge', em:'🧊', en:'Refrigerator', ja:'冷蔵庫',
-     text:'The refrigerator is for your use. Please leave it EMPTY at check-out.',
+    {id:'fridge', em:'🧊', en:'Refrigerator', zh:'冰符1使用', ko:'냉장고 사용', ja:'冷蔵庫',
+     text:'The refrigerator is for your use. Please leave it EMPTY at check-out.', textZh:'冰箱请随意使用。退房时请清空。', textKo:'냉장고는 자유롭게 사용하세요. 체크아웃 시는 비워주세요.',
      textJa:'冷蔵庫はご自由にお使いください。チェックアウト時は空にしてください。'},
-    {id:'shoes', em:'👟', en:'No shoes indoors', ja:'土足禁止',
-     text:'Please remove shoes at the entrance. Slippers are provided.',
+    {id:'shoes', em:'👟', en:'No shoes indoors', zh:'室内禁止穿鞋', ko:'실내 신발 금지', ja:'土足禁止',
+     text:'Please remove shoes at the entrance. Slippers are provided.', textZh:'请在门口脱鞋。备有拖鞋供您使用。', textKo:'현관에서 신발을 벗고 들어오세요. 슬리퍼가 준비되어 있습니다.',
      textJa:'玄関で靴を脱いでお上がりください。スリッパをご用意しています。'},
-    {id:'noise', em:'🔇', en:'Quiet hours: 21:00 – 7:00', ja:'騒音注意', imp:true,
-     text:'Please keep noise to a minimum between 9 PM and 7 AM. Please be considerate of neighbors.',
+    {id:'noise', em:'🔇', en:'Quiet hours: 21:00 – 7:00', zh:'安静时间：21:00–7:00', ko:'조용한 시간：21:00–7:00', ja:'騒音注意', imp:true,
+     text:'Please keep noise to a minimum between 9 PM and 7 AM. Please be considerate of neighbors.', textZh:'晚䌢9点至早䌢7点请保持安静。请配虑邻居。', textKo:'밤 9시~아침 7시는 조용히 지내주세요. 이웃에 배려 부탁드립니다.',
      textJa:'夜21時〜翌朝7時は特に静かにお過ごしください。近隣への配慮をお願いします。'},
-    {id:'firerule', em:'🧯', en:'Fire Safety', ja:'防災', imp:true,
-     text:'Fire extinguishers are located in: 1F changing room (脱衣所) and 2F balcony bedroom. Do not touch unless emergency.',
+    {id:'firerule', em:'🧯', en:'Fire Safety', zh:'消防安全', ko:'화재 안전', ja:'防災', imp:true,
+     text:'Fire extinguishers are located in: 1F changing room (脱衣所) and 2F balcony bedroom. Do not touch unless emergency.', textZh:'灭火器位置：1楼更衣室・2楼阳台卧室。非紧急请勿触碰。', textKo:'소화기 위치：1F 탈의실 / 2F 베란다 있는 침실. 비상시 외에는 만지지 마세요.',
      textJa:'消火器の設置場所：1F脱衣所・2Fベランダのある寝室。非常時以外は触れないでください。'},
-    {id:'stream', em:'📺', en:'Netflix / YouTube', ja:'ストリーミングサービス',
-     text:'Please use your own account for Netflix, YouTube, etc. You MUST log out before check-out.',
+    {id:'stream', em:'📺', en:'Netflix / YouTube', zh:'Netflix / YouTube 사용', ko:'Netflix / YouTube 사용', ja:'ストリーミングサービス',
+     text:'Please use your own account for Netflix, YouTube, etc. You MUST log out before check-out.', textZh:'请使用您自己的Netflix、YouTube等帐号。退房前请务必登出。', textKo:'Netflix·YouTube 등은 본인 계정을 사용하세요. 체크아웃 전에 반드시 로그아웃하세요.',
      textJa:'NetflixやYouTube等はご自身のアカウントをご使用ください。チェックアウト前に必ずログアウトしてください。'},
   ],
   emer:{
     address:'3-14-7 Tamatsu, Higashinari-ku, Osaka　〒537-0025',
-    hospital:{em:'🏥', en:'Nearest Hospital', ja:'最寄りの医療機関', name:'東成病院', tel:'06-6981-2508'},
-    police:{em:'👮', en:'Nearest Police', ja:'最寄りの警察署', name:'東成警察署', tel:'06-6974-1234'},
-    fire:{em:'🚒', en:'Nearest Fire Dept', ja:'最寄りの消防署', name:'東成消防署', tel:'06-6971-0119'},
+    hospital:{em:'🏥', en:'Nearest Hospital', zh:'最近的医院', ko:'가장 가까운 병원', ja:'最寄りの医療機関', name:'東成病院', tel:'06-6981-2508'},
+    police:{em:'👮', en:'Nearest Police', zh:'最近的警察局', ko:'가장 가까운 경찰서', ja:'最寄りの警察署', name:'東成警察署', tel:'06-6974-1234'},
+    fire:{em:'🚒', en:'Nearest Fire Dept', zh:'最近的消防署', ko:'가장 가까운 소방서', ja:'最寄りの消防署', name:'東成消防署', tel:'06-6971-0119'},
   }
 }
 };
@@ -601,19 +622,32 @@ function makeRuleImg(url, label){
   const lbl = label ? `<div style="text-align:center;font-size:.72rem;margin-top:.25rem"><a href="https://maps.app.goo.gl/mTeYprrv5YhBbJ1U8?g_st=ic" target="_blank" style="color:#3A7D8C;text-decoration:underline">${label}</a></div>` : '';
   return `<img src="${url}" style="width:100%;max-width:220px;border-radius:10px;margin:.75rem auto .1rem;display:block;border:1px solid #EDE0CE" alt="photo">${lbl}`;
 }
+function getLang(s, enKey, jaKey){
+  enKey = enKey||'en'; jaKey = jaKey||'ja';
+  const zhKey = enKey==='en' ? 'zh' : enKey+'Zh';
+  const koKey = enKey==='en' ? 'ko' : enKey+'Ko';
+  if(currentLang==='ja') return s[jaKey]||s[enKey]||'';
+  if(currentLang==='zh') return s[zhKey]||s.zh||s[enKey]||'';
+  if(currentLang==='ko') return s[koKey]||s.ko||s[enKey]||'';
+  return s[enKey]||'';
+}
 function makeStep(s,acc){
+  const main = getLang(s);
+  const sub = (currentLang!=='ja'&&s.ja) ? `<div class="step-ja">${s.ja}</div>` : '';
   return`<li class="step">
     <span class="step-num" style="background:${acc}">${s.i}</span>
-    <div><div class="step-en">${s.en}</div><div class="step-ja">${s.ja}</div></div>
+    <div><div class="step-en">${main}</div>${sub}</div>
   </li>`;
 }
 
-function sectionCard(id,em,en,ja,bodyHtml,imp){
+function sectionCard(id,em,en,ja,bodyHtml,imp,zhTitle,koTitle){
   const borderColor=imp?'var(--red)':'var(--foam)';
+  const mainTitle = currentLang==='ja'?ja:currentLang==='zh'?(zhTitle||en):currentLang==='ko'?(koTitle||en):en;
+  const subTitle = (currentLang!=='ja') ? `<div class="section-title-ja">${ja}</div>` : '';
   return`<div class="section-card rule-${imp?'important':'card'}" style="border-left:4px solid ${borderColor}">
     <div class="section-head" onclick="toggleSection('${id}')">
       <span class="section-icon">${em}</span>
-      <div><div class="section-title-en">${en}</div><div class="section-title-ja">${ja}</div></div>
+      <div><div class="section-title-en">${mainTitle}</div>${subTitle}</div>
       <span class="chevron" id="sec-chev-${id}">▼</span>
     </div>
     <div class="section-body" id="sec-body-${id}" style="display:none">${bodyHtml}</div>
@@ -631,30 +665,35 @@ function renderManual(p){
       <div style="font-size:.8rem;color:var(--smk);margin:.25rem 0">${p.address}</div>
       <div style="font-size:.75rem;color:var(--smk);font-style:italic">${p.addressJa}</div>
       <ul class="access-list">`;
-  p.access.forEach(a=>{ html+=`<li class="access-item"><span class="access-icon">🚉</span><div><div class="access-en">${a.en}</div><div class="access-ja">${a.ja}</div></div></li>`; });
+  p.access.forEach(a=>{ const aMain=getLang(a); const aSub=(currentLang!=='ja')?`<div class="access-ja">${a.ja}</div>`:''; html+=`<li class="access-item"><span class="access-icon">🚉</span><div><div class="access-en">${aMain}</div>${aSub}</div></li>`; });
   html+=`</ul>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem">
-        <span style="background:${acc}22;color:${acc};border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600">👥 Max ${p.maxGuests}</span>
-        <span style="background:${acc}22;color:${acc};border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600">🏢 ${p.floors}</span>
+        <span style="background:${acc}22;color:${acc};border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600">👥 ${{en:'Max',ja:'最大',zh:'最多',ko:'최대'}[currentLang]||'Max'} ${p.maxGuests} ${{en:'guests',ja:'名',zh:'人',ko:'명'}[currentLang]||'guests'}</span>
+        <span style="background:${acc}22;color:${acc};border-radius:20px;padding:.25rem .75rem;font-size:.78rem;font-weight:600">🏢 ${getLang(p,'floors','floorsJa')||p.floors}</span>
       </div>
-      <div style="font-size:.78rem;color:var(--smk);margin-top:.5rem">🛎 ${p.amenities}</div>
+      <div style="font-size:.78rem;color:var(--smk);margin-top:.5rem">🛎 ${getLang(p,'amenities','amenitiesJa')||p.amenities}</div>
     </div>
   </div>`;
 
   // WiFi card
+  const wifiTitle={en:'Wi-Fi Connection',ja:'Wi-Fi接続方法',zh:'Wi-Fi连接方法',ko:'Wi-Fi 연결 방법'};
+  const wifiMainTitle = wifiTitle[currentLang]||wifiTitle.en;
+  const wifiSubTitle = (currentLang!=='ja')?`<div class="section-title-ja">${wifiTitle.ja}</div>`:'';
   html+=`<div class="section-card"><div class="section-head" onclick="toggleSection('wifi')">
     <span class="section-icon">📶</span>
-    <div><div class="section-title-en">Wi-Fi Connection</div><div class="section-title-ja">Wi-Fi接続方法</div></div>
+    <div><div class="section-title-en">${wifiMainTitle}</div>${wifiSubTitle}</div>
     <span class="chevron" id="sec-chev-wifi">▼</span>
   </div><div class="section-body" id="sec-body-wifi" style="display:none">
     <div class="wifi-box">
-      <div class="wifi-row"><span class="wifi-label">Network (SSID)</span><span class="wifi-val">${p.wifi.id}</span></div>
-      <div class="wifi-row"><span class="wifi-label">Password / パスワード</span><span class="wifi-val">${p.wifi.pass}</span></div>
+      <div class="wifi-row"><span class="wifi-label">${{en:'Network (SSID)',ja:'ネットワーク名',zh:'网络名称 (SSID)',ko:'네트워크 이름'}[currentLang]||'Network'}</span><span class="wifi-val">${p.wifi.id}</span></div>
+      <div class="wifi-row"><span class="wifi-label">${{en:'Password',ja:'パスワード',zh:'密码',ko:'비밀번호'}[currentLang]||'Password'}</span><span class="wifi-val">${p.wifi.pass}</span></div>
     </div>
     <ol class="steps">
-      <li class="step"><span class="step-num" style="background:${acc}">1</span><div><div class="step-en">Open Settings on your device</div><div class="step-ja">デバイスの「設定」を開く</div></div></li>
-      <li class="step"><span class="step-num" style="background:${acc}">2</span><div><div class="step-en">Select Wi-Fi and choose the network name above</div><div class="step-ja">「Wi-Fi」で上記ネットワーク名を選択</div></div></li>
-      <li class="step"><span class="step-num" style="background:${acc}">3</span><div><div class="step-en">Enter the password and tap Connect</div><div class="step-ja">パスワードを入力して「接続」をタップ</div></div></li>
+      ${[
+        {en:'Open Settings on your device',ja:'デバイスの「設定」を開く',zh:'打开设备的"设置"',ko:'기기의 "설정"을 열어주세요'},
+        {en:'Select Wi-Fi and choose the network name above',ja:'「Wi-Fi」で上記ネットワーク名を選択',zh:'选择"Wi-Fi"，并选择上述网络名称',ko:'"Wi-Fi"에서 위의 네트워크 이름 선택'},
+        {en:'Enter the password and tap Connect',ja:'パスワードを入力して「接続」をタップ',zh:'输入密码，点击"连接"',ko:'비밀번호를 입력하고 "연결" 탭'},
+      ].map((s,i)=>makeStep({...s,i:i+1},acc)).join('')}
     </ol>
   </div></div>`;
 
@@ -663,8 +702,12 @@ function renderManual(p){
     let body=``;
     if(sec.brand) body+=`<div style="font-size:.75rem;font-weight:600;color:var(--smk);margin-top:.6rem;text-transform:uppercase;letter-spacing:.05em">${sec.brand}</div>`;
     body+=`<ol class="steps">${sec.steps.map((s,i)=>makeStep({...s,i:i+1},acc)).join('')}</ol>`;
-    if(sec.warn) body+=`<div class="warn-box"><div class="warn-text">⚠ ${sec.warn}</div><div class="warn-ja">${sec.warnJa}</div></div>`;
-    html+=sectionCard(sec.id,sec.em,sec.en,sec.ja,body,false);
+    if(sec.warn){
+      const warnMain = getLang({en:sec.warn,ja:sec.warnJa,zh:sec.warnZh,ko:sec.warnKo},'en','ja');
+      const warnSub = (currentLang!=='ja'&&sec.warnJa)?`<div class="warn-ja">${sec.warnJa}</div>`:'';
+      body+=`<div class="warn-box"><div class="warn-text">⚠ ${warnMain}</div>${warnSub}</div>`;
+    }
+    html+=sectionCard(sec.id,sec.em,sec.en,sec.ja,body,false,sec.zh,sec.ko);
   });
 
   el.innerHTML=html;
@@ -673,13 +716,22 @@ function renderManual(p){
 // ── Rules ──
 function renderRules(p){
   const el=document.getElementById('content-rules');
+  const rulesIntro={
+    en:'Please observe the following house rules. Thank you for your cooperation.',
+    ja:'以下のハウスルールをお守りください。ご協力をお願いいたします。',
+    zh:'请遵守以下房屋规则。感谢您的配合。',
+    ko:'다음 하우스 규칙을 준수해 주세요. 진심으로 감사드립니다.'
+  };
+  const rulesJa=currentLang!=='ja'?`<br><span style="font-style:italic">${rulesIntro.ja}</span>`:'';
   let html=`<div style="font-size:.8rem;color:var(--smk);margin-bottom:.75rem;padding:.5rem .75rem;background:var(--foam);border-radius:8px">
-    Please observe the following house rules. Thank you for your cooperation.<br>
-    <span style="font-style:italic">以下のハウスルールをお守りください。ご協力をお願いいたします。</span>
+    ${rulesIntro[currentLang]||rulesIntro.en}${rulesJa}
   </div>`;
   p.rules.forEach(r=>{
-    const body=`<div class="rule-text">${r.text}</div><div class="rule-ja">${r.textJa}</div>${makeRuleImg(r.img||'', r.imgLabel||'')}`;
-    html+=sectionCard(r.id,r.em,r.en,r.ja,body,r.imp||false);
+    const tmap={en:'text',ja:'textJa',zh:'textZh',ko:'textKo'};
+    const mainTxt = r[tmap[currentLang]]||r.text||'';
+    const subJa = (currentLang!=='ja'&&r.textJa) ? `<div class="rule-ja">${r.textJa}</div>` : '';
+    const body=`<div class="rule-text">${mainTxt}</div>${subJa}${makeRuleImg(r.img||'', r.imgLabel||'')}`;
+    html+=sectionCard(r.id,r.em,r.en,r.ja,body,r.imp||false,r.zh||'',r.ko||'');
   });
   el.innerHTML=html;
 }
@@ -690,15 +742,15 @@ function renderEmergency(p){
   const el=document.getElementById('content-emergency');
   const html=`
   <div class="emer-hero">
-    <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Emergency Numbers / 緊急連絡先</div>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">${{en:"Emergency Numbers",ja:"緊急連絡先",zh:"紧急联络",ko:"긴급 연락처"}[currentLang]||"Emergency Numbers"} / 緊急連絡先</div>
     <div class="emer-nums">
       <div class="emer-num">
         <div class="emer-num-dig">119</div>
-        <div class="emer-num-label">Fire / Ambulance<br>消防・救急</div>
+        <div class="emer-num-label">${{en:'Fire / Ambulance',ja:'消防・救急',zh:'消防·救护',ko:'소방·구급'}[currentLang]||'Fire/Ambulance'}</div>
       </div>
       <div class="emer-num">
         <div class="emer-num-dig">110</div>
-        <div class="emer-num-label">Police<br>警察</div>
+        <div class="emer-num-label">${{en:'Police',ja:'警察',zh:'警察',ko:'경찰'}[currentLang]||'Police'}</div>
       </div>
     </div>
     <div class="emer-addr">📍 ${e.address}</div>
@@ -706,12 +758,12 @@ function renderEmergency(p){
 
   <div class="contacts-grid">
     ${[e.hospital,e.police,e.fire,
-       {em:'📞',en:'Host Support',ja:'宿泊サポート窓口',name:'𠮷川延良 (Nobuyoshi Yoshikawa)',tel:'090-9112-9281'}
+       {em:'📞',en:'Host Support',zh:'住宿支持',ko:'숙박 지원',ja:'宿泊サポート窓口',name:'𠮷川延良 (Nobuyoshi Yoshikawa)',tel:'090-9112-9281'}
       ].map(c=>`
     <div class="contact-card">
       <span class="contact-icon">${c.em}</span>
       <div class="contact-info">
-        <div class="contact-name-en">${c.en}</div>
+        <div class="contact-name-en">${currentLang==="zh"?(c.zh||c.en):currentLang==="ko"?(c.ko||c.en):currentLang==="ja"?(c.ja||c.en):c.en}</div>
         <div class="contact-name-ja">${c.name}</div>
       </div>
       <div class="contact-tel"><a href="tel:${c.tel.replace(/-/g,'')}">${c.tel}</a></div>
@@ -719,23 +771,125 @@ function renderEmergency(p){
   </div>
 
   <div class="response-card">
-    <div class="response-head">🔥 Fire / 火災</div>
-    <div class="response-en">Stay calm and call 119. ${p.id==='bainan' ? 'A fire suppression sheet is located in the room.' : 'A fire extinguisher is located in the room.'} Evacuate immediately if the fire spreads.</div>
+    <div class="response-head">🔥 ${{en:'Fire',ja:'火災',zh:'火灾',ko:'화재'}[currentLang]||'Fire'} / 火災</div>
+    <div class="response-en">${currentLang==='zh'?'冷静拨打119。'+(p.id==='bainan'?'灭火毯在室内。':'灭火器在室内。')+'火势扩大时立即避难。':currentLang==='ko'?'침착하게 119에 전화하세요. '+(p.id==='bainan'?'소화 시트가 실내에 있습니다.':'소화기가 실내에 있습니다.')+' 화재가 확산되면 즉시 대피하세요.':'Stay calm and call 119. '+(p.id==='bainan'?'A fire suppression sheet is located in the room.':'A fire extinguisher is located in the room.')+' Evacuate immediately if the fire spreads.'}</div>
     <div class="response-ja">落ち着いて119番通報。${p.id==='bainan' ? '消火シートは室内にあります。' : '消火器は室内にあります。'}炎が広がった場合は直ちに避難。</div>
   </div>
   <div class="response-card">
     <div class="response-head">🌏 Earthquake / 地震</div>
-    <div class="response-en">Take cover under a table and protect your head. Exit only after the shaking stops. Check emergency route maps on each floor.</div>
+    <div class="response-en">${currentLang==='zh'?'寻找桌子下方避难并保护头部。摇晃停止后再外出。请确认各楼避难路线图。':currentLang==='ko'?'테이블 아래로 대피하고 머리를 보호하세요. 흔들림이 멈치면 외출하세요. 각 층의 대피 경로를 확인하세요.':'Take cover under a table and protect your head. Exit only after the shaking stops. Check emergency route maps on each floor.'}</div>
     <div class="response-ja">テーブルの下に避難し頭を守る。揺れが収まってから外へ。各フロアの避難経路図を確認してください。</div>
   </div>
 
   <div class="hotline-box">
-    <div style="font-size:.85rem;font-weight:700;color:var(--lat)">📞 Multilingual Support / 多言語サポート</div>
-    <div style="font-size:.78rem;color:var(--smk);margin:.3rem 0">Japan Visitor Hotline — 24 hrs / 24時間対応・英語可</div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--lat)">📞 ${{en:'Multilingual Support',ja:'多言語サポート',zh:'多语言支持',ko:'다국어 지원'}[currentLang]||'Multilingual Support'}</div>
+    <div style="font-size:.78rem;color:var(--smk);margin:.3rem 0">Japan Visitor Hotline — ${{en:'24 hrs, English OK',ja:'24時間対応・英語可',zh:'24小时·英语可',ko:'24시간·영어 가능'}[currentLang]||'24 hrs'}</div>
     <div class="hotline-num"><a href="tel:0503816-2787" style="color:inherit;text-decoration:none">050-3816-2787</a></div>
-    <div class="brand-label">For multilingual support, call the Japan Visitor Hotline above.</div>
+    <div class="brand-label">${{en:'For multilingual support, call the Japan Visitor Hotline above.',ja:'通訳が必要な場合はJapan Visitor Hotlineへ。',zh:'如需翻译，请拨打上方的Japan Visitor Hotline。',ko:'통역이 필요한 경우 위의 Japan Visitor Hotline으로 연락하세요.'}[currentLang]||'For multilingual support, call the Japan Visitor Hotline above.'}</div>
   </div>`;
   el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════
+// LANGUAGE SYSTEM
+// ═══════════════════════════════════════════
+let currentLang = 'en';
+
+const LANGS = {
+  en: {
+    manualTitle: 'Guest Manual',
+    manualSub: 'Guest Manual',
+    selectProp: 'Select your property to continue',
+    accessCode: '🔒 Access code required',
+    pinLabel: 'Enter 4-digit access code',
+    back: '← Back',
+    tabManual: 'Manual',
+    tabRules: 'Rules',
+    tabEmergency: 'Emergency',
+  },
+  ja: {
+    manualTitle: '宿泊マニュアル',
+    manualSub: 'Guest Manual',
+    selectProp: '物件を選択してください',
+    accessCode: '🔒 アクセスコードが必要です',
+    pinLabel: '4桁のアクセスコードを入力してください',
+    back: '← 戻る',
+    tabManual: 'マニュアル',
+    tabRules: 'ルール',
+    tabEmergency: '緊急時',
+  },
+  zh: {
+    manualTitle: '住宿手册',
+    manualSub: 'Guest Manual',
+    selectProp: '请选择您的住所',
+    accessCode: '🔒 需要访问码',
+    pinLabel: '请输入4位访问码',
+    back: '← 返回',
+    tabManual: '手册',
+    tabRules: '规则',
+    tabEmergency: '紧急',
+  },
+  ko: {
+    manualTitle: '숙박 안내서',
+    manualSub: 'Guest Manual',
+    selectProp: '숙소를 선택해 주세요',
+    accessCode: '🔒 접근 코드가 필요합니다',
+    pinLabel: '4자리 접근 코드를 입력하세요',
+    back: '← 뒤로',
+    tabManual: '안내서',
+    tabRules: '규칙',
+    tabEmergency: '긴급',
+  },
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = LANGS[lang];
+  // Update landing page
+  const lt = document.getElementById('landing-title');
+  if(lt) lt.textContent = t.manualTitle;
+  const ls = document.getElementById('landing-subtitle');
+  if(ls) ls.textContent = t.manualSub;
+  const ls2 = document.getElementById('landing-sub2');
+  if(ls2) ls2.textContent = t.selectProp;
+  const ll = document.getElementById('landing-lock');
+  if(ll) ll.textContent = t.accessCode;
+  // Update PIN screen
+  const pl = document.getElementById('pin-label-text');
+  if(pl) pl.innerHTML = t.pinLabel;
+  const pb = document.getElementById('pin-back-btn');
+  if(pb) pb.textContent = t.back;
+  // Update tabs
+  const tm = document.getElementById('tab-label-manual');
+  if(tm) tm.textContent = t.tabManual;
+  const tr = document.getElementById('tab-label-rules');
+  if(tr) tr.textContent = t.tabRules;
+  const te = document.getElementById('tab-label-emergency');
+  if(te) te.textContent = t.tabEmergency;
+  // Update back buttons in main
+  document.querySelectorAll('.btn-back').forEach(b => {
+    if(b.id !== 'pin-back-btn') b.textContent = t.back;
+  });
+  // Active lang buttons (landing + mini)
+  const langLabel = lang === 'en' ? 'EN' : lang === 'ja' ? '日本語' : lang === 'zh' ? '中文' : '한국어';
+  document.querySelectorAll('.lang-btn, .lang-mini-btn').forEach(b => {
+    const isActive = b.textContent.includes(langLabel);
+    b.classList.toggle('active', isActive);
+    if(b.classList.contains('lang-mini-btn') && isActive && currentProp) {
+      b.style.background = currentProp.accent;
+    } else if(b.classList.contains('lang-mini-btn')) {
+      b.style.background = '';
+    }
+  });
+  // Re-render content if main view is visible
+  const mainView = document.getElementById('view-main');
+  if(mainView && !mainView.classList.contains('hidden') && currentProp) {
+    const activeName = document.querySelector('.tab.active')?.id?.replace('tab-','') || 'manual';
+    renderManual(currentProp);
+    renderRules(currentProp);
+    renderEmergency(currentProp);
+    switchTab(activeName);
+  }
 }
 </script>
 </body>
