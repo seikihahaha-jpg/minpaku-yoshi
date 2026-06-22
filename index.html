@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -168,8 +168,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </button>
     <button class="btn btn-prop" onclick="selectProp('tamatsu')">
       <span class="prop-emoji">🏡</span>
-      <span class="prop-name">Tamatsu</span>
-      <span class="prop-sub">玉津</span>
+      <span class="prop-name">Tamatsu Base</span>
+      <span class="prop-sub">玉津ベース</span>
     </button>
   </div>
   <div style="font-size:.75rem;color:var(--smk);text-align:center">
@@ -234,7 +234,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- Emergency tab -->
   <div id="content-emergency" class="content-area hidden"></div>
 
-  <div class="footer">Bainan Base / 梅南ベース &amp; Tamatsu / 玉津<br>Host: 𠮷川延良 090-9112-9281</div>
+  <div class="footer">Bainan Base / 梅南ベース &amp; Tamatsu Base / 玉津ベース<br>Host: 𠮷川延良 090-9112-9281</div>
 </div>
 
 <script>
@@ -245,7 +245,7 @@ const PROPS = {
 bainan: {
   id:'bainan', pin:'2727', emoji:'🌿', name:'Bainan Base', nameJa:'梅南ベース',
   accent:'#C4873A', accentLt:'#FBF6EF',
-  address:'1-2-27 Bainan, Nishinari-ku, Osaka', addressJa:'大阪市西成区梅南1-2-27',
+  address:'1-2-27 Bainan, Nishinari-ku, Osaka', addressJa:'大阪市西成区梅南1丁目2-27',
   access:[
     {en:'Hanazono-cho Sta. (Yotsubashi Line) — 4 min walk', ja:'地下鉄四つ橋線 花園町駅 徒歩4分'},
     {en:'Tengachaya Sta. (Nankai) — 12 min walk', ja:'南海電鉄 天下茶屋駅 徒歩12分'},
@@ -379,12 +379,12 @@ bainan: {
 },
 // ──────────────────────────────────────────
 tamatsu: {
-  id:'tamatsu', pin:'3147', emoji:'🏡', name:'Tamatsu', nameJa:'玉津',
+  id:'tamatsu', pin:'3147', emoji:'🏡', name:'Tamatsu Base', nameJa:'玉津ベース',
   accent:'#3A7D8C', accentLt:'#EBF6F8',
-  address:'3-14-7 Tamatsu, Higashinari-ku, Osaka', addressJa:'大阪市東成区玉津3-14-7',
+  address:'3-14-7 Tamatsu, Higashinari-ku, Osaka', addressJa:'大阪市東成区玉津3丁目14-7',
   access:[
-    {en:'Tsuruhashi Sta. (JR Loop / Kintetsu) — 13 min walk', ja:'JR環状線 / 近鉄 鶴橋駅 徒歩13分'},
-    {en:'Imazato Sta. (Sennichimae Line) — 9 min walk', ja:'地下鉄千日前線 今里駅 徒歩9分'},
+    {en:'Tsuruhashi Sta. (JR Loop / Kintetsu) — 13 min walk', ja:'JR環状線・近鉄　鶴橋駅　徒歩13分'},
+    {en:'Imazato Sta. (Sennichimae Line) — 9 min walk', ja:'地下鉄千日前線　今里駅　徒歩9分'},
     {en:'No parking — use nearby coin parking', ja:'駐車場なし（近隣コインパーキング利用）'},
   ],
   wifi:{id:'NSD1K-0548-a', pass:'faH5YyGTFUYCc'},
@@ -402,7 +402,7 @@ tamatsu: {
      ]},
     {id:'stove', em:'🍳', en:'Stove / コンロ', ja:'コンロの使い方',
      steps:[
-       {en:'Turn the knob and press to ignite — hold until lit', ja:'つまみを回して押し込み、着火するまで押し続ける'},
+       {en:'Turn the knob and press to ignite — hold until lit', ja:'つまみを回して押し込む。着火するまで押し続ける'},
        {en:'Adjust flame with the knob', ja:'つまみで火力を調整'},
        {en:'Turn knob to OFF after use', ja:'使用後はつまみをOFFに戻す'},
      ],
@@ -431,7 +431,7 @@ tamatsu: {
     {id:'bath', em:'🛁', en:'Bath', ja:'お風呂の使い方',
      steps:[
        {en:'Turn on water heater first (see above)', ja:'先に給湯器を起動（上記参照）'},
-       {en:'Turn faucet to hot side and fill tub to desired level', ja:'蛇口をお湯側に回し、適切な水位まで湯を張る'},
+       {en:'Turn faucet to hot side and fill tub to desired level', ja:'蛇口をお湯側に回し、適量まで湯を張る'},
        {en:'After use, drain the tub and wipe it down lightly', ja:'使用後は排水し、浴槽を軽く拭いてください'},
      ]},
     {id:'toilet', em:'🚽', en:'Toilet', ja:'トイレ',
@@ -480,7 +480,7 @@ tamatsu: {
      textJa:'施設内・周辺は全面禁煙。違反の場合クリーニング費用（目安2〜3万円）をご請求する場合があります。'},
     {id:'smarea', em:'🚬', en:'Smoking areas nearby', ja:'近隣の喫煙可能な場所',
      text:"Hollys Coffee Life Imazato store, or Osaka City Designated Smoking Area near Tsuruhashi Station (3-18-8 Higashikobashi, Higashinari-ku, Osaka).",
-     textJa:'ホリーズカフェライフ今里店、または鶴橋駅前の大阪市指定喫煙所（東成区東小橋3-18-8）。'},
+     textJa:'ホリーズカフェライフ今里店、または鶴橋駅前の大阪市指定喫煙所（大阪市東成区東小橋3-18-8）。'},
     {id:'fridge', em:'🧊', en:'Refrigerator', ja:'冷蔵庫',
      text:'The refrigerator is for your use. Please leave it EMPTY at check-out.',
      textJa:'冷蔵庫はご自由にお使いください。チェックアウト時は空にしてください。'},
@@ -495,7 +495,7 @@ tamatsu: {
      textJa:'NetflixやYouTube等はご自身のアカウントをご使用ください。チェックアウト前に必ずログアウトしてください。'},
   ],
   emer:{
-    address:'3-14-7 Tamatsu, Higashinari-ku, Osaka 〒537-0025',
+    address:'3-14-7 Tamatsu, Higashinari-ku, Osaka　〒537-0025',
     hospital:{em:'🏥', en:'Nearest Hospital', ja:'最寄りの医療機関', name:'東成病院', tel:'06-6981-2508'},
     police:{em:'👮', en:'Nearest Police', ja:'最寄りの警察署', name:'東成警察署', tel:'06-6974-1234'},
     fire:{em:'🚒', en:'Nearest Fire Dept', ja:'最寄りの消防署', name:'東成消防署', tel:'06-6971-0119'},
